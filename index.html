@@ -1,0 +1,5812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Assistant superviseur PCC</title>
+<link rel="png" type="image/ico" href="Photos/logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== Base ===== */
+html, body {
+margin: 0;
+padding: 0;
+height: 100%;
+font-family:Calibri Light,Calibri Light;
+background: url('Photos/fond-accueil.jpg') center/cover no-repeat;
+color: white;
+overflow-x: hidden;
+}
+ 
+body {
+font-family: ' Calibri Light',Calibri Light,Calibri Light;
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+background: rgba(0,0,0,0.6);
+position: relative;
+transition: background-image 0.5s ease;
+margin: 0;
+padding: 0;
+color: white;
+z-index: 1;
+}
+
+body::before {
+content: '';
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-size: cover;
+background-position: center;
+z-index: -2;
+transition: opacity 0.5s ease;
+}
+
+button:hover {
+transform: scale(1.02);
+transition: transform 0.2s ease;
+}
+
+
+/* Fonds spécifiques */
+body.fond-accueil::before { background-image: url('Photos/fond-accueil.jpg'); }
+body.fond-pt::before{ background-image: url('Photos/fond-pt.jpg'); }
+body.fond-guide::before { background-image: url('Photos/fond-mr.jpg'); }
+body.fond-mode::before{ background-image: url('Photos/fond-mo.jpg'); }
+body.fond-desenfumage::before { background-image: url('Photos/fond-de.jpg'); }
+
+/* ===== Overlay accueil ===== */
+.overlay {
+position: relative;
+background-color: rgba(0,0,0,0); /* transparent */
+height: 100vh;
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 40px 20px;
+box-sizing: border-box;
+}
+
+/* ===== Titre ===== */
+@keyframes fadeInTitle {
+from { opacity: 0; transform: translate(-50%, -10px); }
+to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+h1 {
+text-align: center;
+font-size: 28px;
+margin: 10px auto;
+padding: 20px 10px;
+color: white;
+background: rgba(0, 0, 0, 0.7);
+border-radius: 20px;
+max-width: 100%;
+}
+
+h2 {
+position: absolute;
+top: 180px;
+margin: 0;
+text-align: center;
+font-size: 36px;
+color: white;
+background: rgba(0,0,0,0);
+border-radius: 20px;
+max-width: 90%;
+z-index: 5;
+}
+
+/* ===== Menu icônes ===== */
+.icon-row {
+display: flex;
+margin-top: 420px; /* ajustable */
+justify-content: center;
+align-items: center;
+gap: 50px;
+flex-wrap: wrap;
+}
+
+.info-box {
+width: 180px;
+height: 180px;
+background-color: rgba(30,30,30,0.75);
+border-radius: 20px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+transition: transform 0.3s ease, background-color 0.3s ease;
+box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+cursor: pointer;
+}
+
+.info-box:hover {
+transform: scale(1.15);
+background-color: rgba(50,50,50,0.95);
+}
+
+.icon-img {
+width: clamp(50px, 6vw, 90px);
+height: auto;
+margin-bottom: 15px;
+filter: brightness(1.2);
+}
+
+.info-box p {
+font-size: 18px;
+margin: 0;
+}
+
+/* ===== Logos ===== */
+#logo-container, #logo-gauche {
+position: absolute;
+top: 10px;
+z-index: 10;
+}
+#logo-container { right: 20px; }
+#logo-gauche { left: 20px; }
+#logo, #logo-g { height: 120px; width: auto; }
+
+/* ===== Sections ===== */
+@keyframes fadeInSection {
+from { opacity: 0; transform: translate(-50%, -20px); }
+to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.content-section {
+display: none;
+position: absolute; /* permet de centrer et superposer les sections */
+top: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 100%;
+min-height: 100vh;
+padding: 0;
+background-color: rgba(0,0,0,0.8);
+color: white;
+animation: fadeInSection 0.5s ease;
+z-index: 2;
+box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+h2 { font-size: 20px; padding: 15px; }
+.icon-row { flex-direction: column; gap: 30px; margin-top: 300px; }
+.info-box { width: 80%; height: auto; padding: 30px; }
+.info-box p { font-size: 16px; }
+}
+
+.search-container {
+margin-bottom: 5px;
+position: relative;
+}
+
+.search-header {
+font-size: 16px;
+margin-bottom: 8px;
+color: #3498db;
+display: flex;
+align-items: center;
+}
+
+.search-header i {
+margin-right: 5px;
+font-size: 20px;
+}
+
+.search-box {
+display: flex;
+align-items: center;
+padding: 2px; 
+background: rgba(255, 255, 255, 0.95);
+border-radius: 8px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+transition: all 0.3s ease;
+border: 2px solid transparent;
+}
+
+.search-box:focus-within {
+border-color: #3498db;
+box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+transform: translateY(-4px);
+}
+
+.search-input {
+flex: 1;
+padding: 6px 10px;/* réduit la hauteur de la zone de texte */
+font-size: 16px;
+border: none;
+background: transparent;
+outline: none;
+width: 100%;
+}
+
+.search-input::placeholder {
+color: #888;
+}
+
+.search-box .clear-btn {
+padding: 10px;
+background: none !important;
+border: none !important;
+color: #e74c3c !important;
+cursor: pointer;
+font-size: 18px;
+border-radius: 5px;
+transition: all 0.2s ease;
+width: auto;
+flex-shrink: 0;
+margin: 0;
+}
+
+.search-box .clear-btn:hover {
+background: rgba(231, 76, 60, 0.1) !important;
+transform: scale(1.1);
+color: #e74c3c !important;
+}
+
+.gauche button.retour {
+position: absolute;
+top: 35px;
+left: 25px;
+z-index: 10;
+background: none;
+border: none;
+padding: 0;
+margin: 0;
+width: auto;
+height: auto;
+cursor: pointer;
+}
+
+.gauche button.retour img.icone-home {
+width: 60px;/* ajuste à ta taille */
+height: 60px;
+display: block;
+}
+
+.interface {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+padding: 20px;
+}
+
+.gauche {
+flex: 1;
+min-width: 300px;
+max-width: 400px;
+top: 10px;
+}
+
+.gauche select, .gauche button {
+width: 100%;
+padding: 10px;
+font-size: 16px;
+margin: 10px auto;
+background: rgba(255,255,255,0.92);
+border: 1px solid #ccc;
+border-radius: 6px;
+backdrop-filter: blur(2px);
+}
+
+.gauche button {
+padding: 8px 15px;
+border: none;
+background: #00aaff;
+color: white;
+border-radius: 4px;
+cursor: pointer;
+}
+
+.gauche button:hover {
+background-color: #e2e2e2;
+color: black;
+}
+
+.boutons-groupes {
+display: flex;
+gap: 10px;
+justify-content: space-between;
+margin-top: 10px;
+}
+
+.boutons-groupes button {
+flex: 1;
+}
+
+.droite {
+flex: 2;
+min-width: 250px;
+}
+
+iframe {
+width: 100%;
+height: calc(100vh - 38px);
+border: 1px solid #ccc;
+border-radius: 6px;
+background: rgba(128, 128, 128, 0.5);
+box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.suggestions {
+position: absolute;
+top: 93%;
+left: 0;
+width: 100%;
+background: white;
+border: 0px solid #ccc;
+border-radius: 5px;
+max-height: 200px;
+overflow-y: auto;
+z-index: 1000;
+color: black;
+}
+
+.suggestions-container {
+width: 100%;
+max-width: 300px;
+position: absolute;
+background: white;
+border:solid #ccc;
+z-index: 10;
+}
+
+.suggestions div {
+padding: 8px 10px;
+cursor: pointer;
+}
+
+.suggestions div:hover {
+background-color: #f0f0f0;
+} 
+ 
+.suggestions div.highlighted {
+background: #3498db !important;
+color: white !important;
+}
+
+.suggestions div.highlighted:hover {
+background: #2980b9 !important;
+}
+
+#inputDossier {
+display: none;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.loader-container {
+position: relative;
+width: 80px;
+height: 80px;
+}
+
+.progress-ring {
+transform: rotate(-90deg);
+}
+
+.loader-text {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 16px;
+font-weight: bold;
+color: white;
+}
+
+.spinner {
+border: 5px solid #f3f3f3;
+border-top: 5px solid #3498db;
+border-radius: 50%;
+width: 50px;
+height: 50px;
+animation: spin 1s linear infinite;
+margin: 0 auto 10px;
+}
+
+.notif {
+position: fixed;
+bottom: 20px;
+right: 20px;
+padding: 12px 20px;
+border-radius: 8px;
+font-size: 14px;
+color: #fff;
+box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+z-index: 9999;
+transition: opacity 0.5s ease;
+}
+
+.notif.success {
+background-color: #4caf50;
+}
+
+.notif.error {
+background-color: #f44336;
+}
+
+.notif.fade-out {
+opacity: 0;
+}
+
+#pdfLoadingPT, #pdfLoadingMR, #pdfLoadingMO, #pdfLoadingDE {
+display: none;
+position: fixed;
+top: 50%;
+left: 62%;
+transform: translate(-50%, -50%);
+background: rgba(0,0,0,0.85);
+color: white;
+padding: 10px;
+border-radius: 15px;
+z-index: 1000;
+text-align: center;
+width: 100px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Commutateur */
+.switch {
+position: relative;
+display: inline-block;
+width: 50px;
+height: 24px;
+margin-left: 10px;
+}
+
+.switch input { 
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #3498db;
+transition: .4s;
+border-radius: 24px;
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+
+/* Quand activé */
+.switch input:checked + .slider {
+background-color: #2ecc71;
+}
+
+.switch input:checked + .slider:before {
+transform: translateX(26px);
+}
+
+.search-header {
+font-weight: bold;
+margin-bottom: 5px;
+}
+
+.mode-toggle {
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 8px; /* espace entre switch et texte */
+}
+
+</style>
+</head>
+<body>
+<div class="overlay" id="accueil">
+<!-- Logos -->
+<div id="logo-container"><img src="Photos/logo.png" id="logo" alt="Logo MR"></div>
+<div id="logo-gauche"><img src="Photos/logo.png" id="logo-g" alt="Logo gauche"></div>
+<!-- Titre -->
+<h2>Assistant superviseur PCC</h2>
+<!-- Menu -->
+<div class="icon-row">
+<div class="info-box" onclick="showSection('pt')">
+<img src="Photos/iconePT.png" class="icon-img" alt="Permis de travail">
+<p>Permis de travail</p>
+</div>
+<div class="info-box" onclick="showSection('guide')">
+<img src="Photos/iconeMR.png" class="icon-img" alt="Guide MR">
+<p>Guide MR</p>
+</div>
+<div class="info-box" onclick="showSection('mode')">
+<img src="Photos/iconeMO.png" class="icon-img" alt="Mode opératoire">
+<p>Mode opératoire</p>
+</div>
+<div class="info-box" onclick="showSection('desenfumage')">
+<img src="Photos/iconeDE.png" class="icon-img" alt="Désenfumage">
+<p>Désenfumage</p>
+</div>
+</div>
+</div>
+<!-- Sections -->
+<div id="sections">
+
+<section id="pt" class="content-section">
+<div id="pdfLoadingPT">
+<div class="spinner"></div>
+<div id="progressTextPT">Chargement: 0%</div>
+</div>
+<div class="interface">
+<div class="gauche">
+<button class="retour" onclick="retourAccueil(); reinitialiserRecherchePT();">
+<img src="Photos/back.png" alt="Accueil" class="icone-home">
+</button>
+<h1>Permis de travail</h1>
+<div class="search-container">
+<div class="search-header">🔎 Recherche Permis du travail</div>
+<div class="search-box">
+<input type="text" class="search-input" id="recherchePT" placeholder="Tapez le n° du permis ou l'intervenant">
+<button class="clear-btn" onclick="reinitialiserRecherchePT()">❌</button>
+</div>
+<div id="suggestionsPT" class="suggestions"></div>
+</div>
+<div class="boutons-groupes">
+<button onclick="miseAJourBase()">MàJ base donnée</button>
+<button onclick="ouvrirPDFExternePT()">Affichage externe 📤</button>
+</div>
+<input type="file" id="inputDossier" webkitdirectory multiple style="display:none">
+</div>
+<div class="droite">
+<iframe id="pdfViewerPT" src="about:blank"></iframe></div></div>
+</section>
+
+<section id="guide" class="content-section fond-mr"> <!-- on garde la classe ici -->
+<div class="interface">
+<div class="gauche">
+<button class="retour" onclick="retourAccueil(); reinitialiserRechercheMR();">
+<img src="Photos/back.png" alt="Accueil" class="icone-home">
+</button>
+<h1>Guide MR</h1>
+
+<!-- Nouvelle barre Évènement/Sous-fiche -->
+<div class="search-container">
+<div class="search-header">
+🔎 Recherche Évènement/Sous-fiche
+</div>
+<div class="mode-toggle">
+<label class="switch">
+<input type="checkbox" id="togglerechercheEvenement" onchange="changerModerechercheEvenement()">
+<span class="slider"></span>
+</label>
+<span id="labelrechercheEvenement">⚠️ Évènement</span>
+</div>
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheEvenement" placeholder="Tapez le n° de l’évènement ....">
+<button class="clear-btn" onclick="reinitialiserRechercheMR()">❌</button>
+</div>
+<div id="suggestionsEvenement" class="suggestions"></div>
+</div>
+
+<div class="boutons-groupes">
+<button onclick="window.open('http://metrodz-carlsource/gmaoCS02/common/menu.faces', '_blank')">GMAO 🌐</button>
+<button onclick="ouvrirNouvelleRechercheMR()">Nouvelle recherche ➕</button>
+</div>
+
+<button onclick="ouvrirPDFExterneMR()">Affichage externe 📤</button>
+
+<div class="boutons-groupes">
+<button onclick="ouvrirFichierDirectMR('Guides MR/Guide MR Série01.pdf')">Guide MR Série01 📃</button>
+<button onclick="ouvrirFichierDirectMR('Guides MR/Guide MR Série02.pdf')">Guide MR Série02 📃</button>
+</div>
+</div>
+
+<div class="droite">
+<iframe id="pdfViewerMR" src="about:blank"></iframe>
+</div>
+</div>
+
+<div id="pdfLoadingMR">
+<div class="spinner"></div>
+<div id="progressTextMRPDF">Chargement...</div>
+</div>
+</section>
+
+<section id="mode" class="content-section">
+<body class="fond-mo">
+<div class="interface">
+<div class="gauche">
+<button class="retour" onclick="retourAccueil(); reinitialiserRechercheMO();">
+<img src="Photos/back.png" alt="Accueil" class="icone-home">
+</button>
+<h1>Mode opératoire</h1>
+<div class="search-container">
+<div class="search-header"> 💻Système</div>
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheSysteme" placeholder="Tapez un mot-clé (ex: WCC)">
+<button class="clear-btn" onclick="reinitialiserRechercheMO()">❌</button>
+</div>
+<div id="suggestionsSysteme" class="suggestions"></div>
+</div>
+<div class="search-container">
+<div class="search-header"> 🚦Signalisation</div>
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheSignalisation" placeholder="Tapez un mot-clé (ex: CDV)">
+<button class="clear-btn" onclick="reinitialiserRechercheMO()">❌</button>
+</div>
+<div id="suggestionsSignalisation" class="suggestions"></div>
+</div>
+<div class="search-container">
+<div class="search-header"> ⚡Energie</div>
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheEnergie" placeholder="Tapez un mot-clé (ex: DUR)">
+<button class="clear-btn" onclick="reinitialiserRechercheMO()">❌</button>
+</div>
+<div id="suggestionsEnergie" class="suggestions"></div>
+</div>
+<div class="search-container">
+<div class="search-header"> 🚆Régulation</div>
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheRegulation" placeholder="Tapez un mot-clé (ex: Trafic)">
+<button class="clear-btn" onclick="reinitialiserRechercheMO()">❌</button>
+</div>
+<div id="suggestionsRegulation" class="suggestions"></div>
+</div>
+<div class="boutons-groupes">
+<button onclick="window.open('http://metrodz-carlsource/gmaoCS02/common/menu.faces', '_blank')">GMAO 🌐</button>
+<button onclick="ouvrirNouvelleRechercheMO()">Nouvelle recherche</button>
+</div>
+<button onclick="ouvrirPDFExterneMO()">Affichage externe 📤 </button>
+<div class="boutons-groupes">
+<button onclick="ouvrirFichierDirectMO('Modes Opératoires/Mode opératoire Système.pdf')">MO Système 📃</button>
+<button onclick="ouvrirFichierDirectMO('Modes Opératoires/Mode opératoire Signalisation.pdf')">MO Signalisation 📃</button>
+</div>
+<div class="boutons-groupes">
+<button onclick="ouvrirFichierDirectMO('Modes Opératoires/Mode opératoire Énergie.pdf')">MO Energie 📃</button>
+<button onclick="ouvrirFichierDirectMO('Modes Opératoires/Mode opératoire Régulation.pdf')">MO Régulation 📃</button>
+</div>
+</div>
+<div id="pdfLoadingMO">
+<div class="spinner"></div>
+<div id="progressTextMOPDF">Chargement...</div>
+</div>
+<div class="droite">
+<iframe id="pdfViewerMO" src="about:blank"></iframe>
+</div>
+</div>
+</section>
+
+<section id="desenfumage" class="content-section">
+<div class="interface">
+<div class="gauche">
+<button class="retour" onclick="retourAccueil(); reinitialiserRechercheDE();">
+<img src="Photos/back.png" alt="Accueil" class="icone-home">
+</button>
+<h1>Désenfumage</h1>
+<!-- Barre PK (inchangée) -->
+<div class="search-container">
+<div class="search-header"> 📍Point kilométrique</div>
+<div class="search-box">
+<input type="text" class="search-input" id="recherchePK" placeholder="Tapez le PK ou le lieu ...">
+<button class="clear-btn" onclick="reinitialiserRechercheDE()">❌</button>
+</div>
+<div id="suggestionsPK" class="suggestions"></div>
+</div>
+<!-- Nouvelle barre Fiche/Scénario -->
+<div class="search-container">
+<!-- Titre -->
+<div class="search-header">
+🔎 Recherche Fiche/Scénario
+</div>
+
+<!-- Sélecteur -->
+<div class="mode-toggle">
+<label class="switch">
+<input type="checkbox" id="togglerechercheFicheDE" onchange="changerModeRechercheFicheDE()">
+<span class="slider"></span>
+</label>
+<span id="labelrechercheFicheDE">📃 Fiche</span>
+</div>
+
+<!-- Barre recherche -->
+<div class="search-box">
+<input type="text" class="search-input" id="rechercheFicheDE" placeholder="Tapez le n° de la fiche ....">
+<button class="clear-btn" onclick="reinitialiserRechercheDE()">❌</button>
+</div>
+<div id="suggestionsFicheDE" class="suggestions"></div>
+</div>
+
+
+
+<button onclick="ouvrirPDFExterneDE()">Affichage externe 📤 </button>
+<button onclick="ouvrirFichierDirect('Guide désenfumage/Guide désenfumage.pdf')">Guide désenfumage 📃</button>
+</div>
+<div class="droite">
+<iframe id="pdfViewerDE" src="about:blank"></iframe>
+</div>
+</div>
+
+<div id="pdfLoadingDE">
+<div class="spinner"></div>
+<div id="progressTextDEPDF">Chargement...</div>
+</div>
+
+</section>
+<script>
+
+function showSection(sectionId) {
+// Masquer toutes les sections
+const sections = document.querySelectorAll('.content-section');
+sections.forEach(section => {
+section.style.display = 'none';
+});
+
+// Afficher la section demandée
+const targetSection = document.getElementById(sectionId);
+if (targetSection) {
+targetSection.style.display = 'block';
+
+// Donner le focus à la première barre de recherche après un court délai
+setTimeout(() => {
+const firstInput = targetSection.querySelector('input[type="text"]');
+if (firstInput) {
+firstInput.focus();
+}
+},
+100);
+}
+
+// Masquer l'écran d'accueil
+document.getElementById('accueil').style.display = 'none';
+
+// Changer l'arrière-plan si nécessaire
+document.body.className = 'fond-' + sectionId;
+}
+
+function retourAccueil() {
+// Masquer toutes les sections
+const sections = document.querySelectorAll('.content-section');
+sections.forEach(section => {
+section.style.display = 'none';
+});
+
+// Afficher l'écran d'accueil
+document.getElementById('accueil').style.display = 'flex';
+
+// Réinitialiser la classe du body
+document.body.className = '';
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', function() {
+// Assurer que seul l'écran d'accueil est visible au chargement
+document.getElementById('accueil').style.display = 'flex';
+
+const sections = document.querySelectorAll('.content-section');
+sections.forEach(section => {
+section.style.display = 'none';
+});
+});
+
+// ================= Inactivité ====================
+let timerInactivite;
+const delaiInactivite = 2 * 60 * 1000; // 2 minutes
+
+function resetTimer() {
+clearTimeout(timerInactivite);
+timerInactivite = setTimeout(() => {
+// Retour à l'accueil seulement si on est dans une section
+const accueilVisible = document.getElementById('accueil').style.display !== 'none';
+if (!accueilVisible) {
+retourAccueil();
+}},
+delaiInactivite);
+}
+
+// Écouteurs pour réinitialiser le timer à chaque action de l'utilisateur
+['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+document.addEventListener(evt, resetTimer, true);
+});
+
+// Lancer le timer dès le chargement
+resetTimer();
+
+// ===================================================================== Variables globales ================================================================
+
+// Guide MR
+const evenements = [
+{ code: "EV009", 
+titre: "Portes ouvertes", chemin: "Evenements/EV009 - Portes ouvertes.pdf", motsCles: ["ev009", "portes", "ouvertes"] },
+{
+code: "EV010",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV010 - Disjoncteur ouvert.pdf",
+motsCles: ["ev010", "disjoncteur", "ouvert"]
+},
+{
+code: "EV011",
+titre: "Panne disjoncteur circuit de commande",
+chemin: "Evenements/EV011 - Panne disjoncteur circuit de commande.pdf",
+motsCles: ["ev011", "panne", "disjoncteur", "circuit", "commande"]
+},
+{
+code: "EV012",
+titre: "Panne disjoncteur circuit de frein ouvert",
+chemin: "Evenements/EV012 - Panne disjoncteur circuit de frein ouvert.pdf",
+motsCles: ["ev012", "panne", "disjoncteur", "frein", "ouvert"]
+},
+{
+code: "EV013",
+titre: "Panne disjoncteur circuit de sécurité ouvert (série 01)",
+chemin: "Evenements/EV013 - Panne disjoncteur circuit de sécurité ouvert (série 01).pdf",
+motsCles: ["ev013", "panne", "disjoncteur", "sécurité", "ouvert"]
+},
+{
+code: "EV013",
+titre: "Panne disjoncteur circuit de sécurité ouvert (série 02)",
+chemin: "Evenements/EV013 - Panne disjoncteur circuit de sécurité ouvert (série 02).pdf",
+motsCles: ["ev013", "panne", "disjoncteur", "sécurité", "ouvert"]
+},
+{
+code: "EV014",
+titre: "Panne disjoncteur commande portes",
+chemin: "Evenements/EV014 - Panne disjoncteur commande portes.pdf",
+motsCles: ["ev014", "panne", "disjoncteur", "commande", "portes"]
+},
+{
+code: "EV015",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV015 - Disjoncteur ouvert.pdf",
+motsCles: ["ev015", "disjoncteur", "ouvert"]
+},
+{
+code: "EV016",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV016 - Disjoncteur ouvert.pdf",
+motsCles: ["ev016", "disjoncteur", "ouvert"]
+},
+{
+code: "EV017",
+titre: "Panne Disjoncteur TCMS (SCMT)",
+chemin: "Evenements/EV017 - Panne Disjoncteur TCMS (SCMT).pdf",
+motsCles: ["ev017", "panne", "disjoncteur", "tcms", "scmt"]
+},
+{
+code: "EV018",
+titre: "Panne disjoncteur charges essentielles",
+chemin: "Evenements/EV018 - Panne disjoncteur charges essentielles.pdf",
+motsCles: ["ev018", "panne", "disjoncteur", "charges", "essentielles"]
+},
+{
+code: "EV019",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV019 - Disjoncteur ouvert.pdf",
+motsCles: ["ev019", "disjoncteur", "ouvert"]
+},
+{
+code: "EV020",
+titre: "Panne disjoncteur alimentation coffre traction",
+chemin: "Evenements/EV020 - Panne disjoncteur alimentation coffre traction.pdf",
+motsCles: ["ev020", "panne", "disjoncteur", "alimentation", "coffre", "traction"]
+},
+{
+code: "EV021",
+titre: "Fusible convertisseur statique",
+chemin: "Evenements/EV021 - Fusible convertisseur statique.pdf",
+motsCles: ["ev021", "fusible", "convertisseur", "statique"]
+},
+{
+code: "EV022",
+titre: "Disjoncteur d'isolement demi-rame",
+chemin: "Evenements/EV022 - Disjoncteur d’isolement demi-rame.pdf",
+motsCles: ["ev022", "disjoncteur", "isolement", "demi-rame"]
+},
+{
+code: "EV023",
+titre: "Panne légère répétiteur MVB",
+chemin: "Evenements/EV023 - Panne légère répétiteur MVB.pdf",
+motsCles: ["ev023", "panne", "légère", "répétiteur", "mvb"]
+},
+{
+code: "EV024",
+titre: "Frein d'urgence",
+chemin: "Evenements/EV024 - Frein d’urgence.pdf",
+motsCles: ["ev024", "frein", "urgence"]
+},
+{
+code: "EV025",
+titre: "Panne grave frein pneumatique",
+chemin: "Evenements/EV025 - Panne grave frein pneumatique.pdf",
+motsCles: ["ev025", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "EV026",
+titre: "Panne grave frein pneumatique",
+chemin: "Evenements/EV026 - Panne grave frein pneumatique.pdf",
+motsCles: ["ev026", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "EV027",
+titre: "Panne grave frein pneumatique",
+chemin: "Evenements/EV027 - Panne grave frein pneumatique.pdf",
+motsCles: ["ev027", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "EV028",
+titre: "Frein isolé avec B22 (série 01)",
+chemin: "Evenements/EV028 - Frein isolé avec B22 (série 01).pdf",
+motsCles: ["ev028", "frein", "isolé", "b22"]
+},
+{
+code: "EV028",
+titre: "Frein isolé avec B22 (série 02)",
+chemin: "Evenements/EV028 - Frein isolé avec B22 (série 02).pdf",
+motsCles: ["ev028", "frein", "isolé", "b22"]
+},
+{
+code: "EV029",
+titre: "Isolement électrique du frein pneumatique",
+chemin: "Evenements/EV029 - Isolement électrique du frein pneumatique.pdf",
+motsCles: ["ev029", "isolement", "électrique", "frein", "pneumatique"]
+},
+{
+code: "EV030",
+titre: "Isolement pneumatique de la voiture",
+chemin: "Evenements/EV030 - Isolement pneumatique de la voiture.pdf",
+motsCles: ["ev030", "isolement", "pneumatique", "voiture"]
+},
+{
+code: "EV031",
+titre: "Panne anti-enrayeur",
+chemin: "Evenements/EV031 - Panne anti-enrayeur.pdf",
+motsCles: ["ev031", "panne", "anti-enrayeur"]
+},
+{
+code: "EV033",
+titre: "Panne grave BCU",
+chemin: "Evenements/EV033 - Panne grave BCU.pdf",
+motsCles: ["ev033", "panne", "grave", "bcu"]
+},
+{
+code: "EV034",
+titre: "Panne légère BCU",
+chemin: "Evenements/EV034 - Panne légère BCU.pdf",
+motsCles: ["ev034", "panne", "légère", "bcu"]
+},
+{
+code: "EV035",
+titre: "Panne grave traction",
+chemin: "Evenements/EV035 - Panne grave traction.pdf",
+motsCles: ["evo35", "panne", "grave", "traction"]
+},
+{
+code: "EV036",
+titre: "Panne grave traction",
+chemin: "Evenements/EV036 - Panne grave traction.pdf",
+motsCles: ["ev036", "panne", "grave", "traction"]
+},
+{
+code: "EV037",
+titre: "Panne grave traction",
+chemin: "Evenements/EV037 - Panne grave traction.pdf",
+motsCles: ["ev037", "panne", "grave", "traction"]
+},
+{
+code: "EV038",
+titre: "Panne grave traction",
+chemin: "Evenements/EV038 - Panne grave traction.pdf",
+motsCles: ["ev038", "panne", "grave", "traction"]
+},
+{
+code: "EV043",
+titre: "Frein électrique HS",
+chemin: "Evenements/EV043 - Frein électrique HS.pdf",
+motsCles: ["ev043", "frein", "électrique", "hs"]
+},
+{
+code: "EV044",
+titre: "Panne TCU (série 01)",
+chemin: "Evenements/EV044 - Panne TCU (série 01).pdf",
+motsCles: ["ev044", "panne", "tcu"]
+},
+{
+code: "EV044",
+titre: "Panne TCU (série 02)",
+chemin: "Evenements/EV044 - Panne TCU (série 02).pdf",
+motsCles: ["ev044", "panne", "tcu"]
+},
+{
+code: "EV046",
+titre: "Ventilation des équipements de traction",
+chemin: "Evenements/EV046 - Ventilation des équipements de traction.pdf",
+motsCles: ["ev046", "ventilation", "équipements", "traction"]
+},
+{
+code: "EV047",
+titre: "Isolement pneumatique des frotteurs",
+chemin: "Evenements/EV047 - Isolement pneumatique des frotteurs.pdf",
+motsCles: ["ev047", "isolement", "pneumatique", "frotteurs"]
+},
+{
+code: "EV048",
+titre: "Panne frotteurs",
+chemin: "Evenements/EV048 - Panne frotteurs.pdf",
+motsCles: ["ev048", "panne", "frotteurs"]
+},
+{
+code: "EV049",
+titre: "Frotteurs bas",
+chemin: "Evenements/EV049 - Frotteurs bas.pdf",
+motsCles: ["ev049", "frotteurs", "bas"]
+},
+{
+code: "EV050",
+titre: "Panne disjoncteur traction (série 01)",
+chemin: "Evenements/EV050 - Panne disjoncteur traction (série 01).pdf",
+motsCles: ["ev050", "panne", "disjoncteur", "traction"]
+},
+{
+code: "EV050",
+titre: "Panne disjoncteur traction (série 02)",
+chemin: "Evenements/EV050 - Panne disjoncteur traction (série 02).pdf",
+motsCles: ["ev050", "panne", "disjoncteur", "traction"]
+},
+{
+code: "EV051",
+titre: "Disjoncteur du circuit de traction ouvert (série 01)",
+chemin: "Evenements/EV051 - Disjoncteur du circuit de traction ouvert (série 01).pdf",
+motsCles: ["ev051", "disjoncteur", "circuit", "traction", "ouvert"]
+},
+{
+code: "EV051",
+titre: "Disjoncteur du circuit de traction ouvert (série 02)",
+chemin: "Evenements/EV051 - Disjoncteur du circuit de traction ouvert (série 02).pdf",
+motsCles: ["ev051", "disjoncteur", "circuit", "traction", "ouvert"]
+},
+{
+code: "EV052",
+titre: "Trolley M2 pas M1",
+chemin: "Evenements/EV052 - Trolley M2 pas M1.pdf",
+motsCles: ["ev052", "trolley", "m2", "pas", "m1"]
+},
+{
+code: "EV053",
+titre: "Trolley branchée",
+chemin: "Evenements/EV053 - Trolley branchée.pdf",
+motsCles: ["ev053", "trolley", "branchée"]
+},
+{
+code: "EV054",
+titre: "Courant coupé",
+chemin: "Evenements/EV054 - Courant coupé.pdf",
+motsCles: ["ev054", "courant", "coupé"]
+},
+{
+code: "EV055",
+titre: "Panne circuit isolement",
+chemin: "Evenements/EV055 - Panne circuit isolement.pdf",
+motsCles: ["ev055", "panne", "circuit", "isolement"]
+},
+{
+code: "EV056",
+titre: "Rame isolée",
+chemin: "Evenements/EV056 - Rame isolée.pdf",
+motsCles: ["ev056", "rame", "isolée"]
+},
+{
+code: "EV057",
+titre: "Commutateur mise à la terre",
+chemin: "Evenements/EV057 - Commutateur mise à la terre.pdf",
+motsCles: ["ev057", "commutateur", "mise", "terre"]
+},
+{
+code: "EV058",
+titre: "Train sans Frein de Stationnement (série 01)",
+chemin: "Evenements/EV058 - Train sans Frein de Stationnement (série 01).pdf",
+motsCles: ["ev058", "train", "frein", "stationnement", "sans"]
+},
+{
+code: "EV058",
+titre: "Train sans Frein de Stationnement (série 02)",
+chemin: "Evenements/EV058 - Train sans Frein de Stationnement (série 02).pdf",
+motsCles: ["ev058", "train", "frein", "stationnement", "sans"]
+},
+{
+code: "EV059",
+titre: "Isolement pneumatique du frein de Stationnement",
+chemin: "Evenements/EV059 - Isolement pneumatique du frein de Stationnement.pdf",
+motsCles: ["ev059", "isolement", "pneumatique", "frein", "stationnement"]
+},
+{
+code: "EV060",
+titre: "Frein de stationnement serré",
+chemin: "Evenements/EV060 - Frein de stationnement serré.pdf",
+motsCles: ["ev060", "frein", "stationnement", "serré"]
+},
+{
+code: "EV061",
+titre: "Electrovalve du frein de Stationnement activée (série 01)",
+chemin: "Evenements/EV061 - Electrovalve du frein de Stationnement activée (série 01).pdf",
+motsCles: ["ev061", "electrovalve", "frein", "stationnement", "activée"]
+},
+{
+code: "EV061",
+titre: "Electrovalve du frein de Stationnement activée (série02)",
+chemin: "Evenements/EV061 - Electrovalve du frein de Stationnement activée (série 02).pdf",
+motsCles: ["ev061", "electrovalve", "frein", "stationnement", "activée"]
+},
+{
+code: "EV062",
+titre: "Frein de stationnement non desserré(série 01)",
+chemin: "Evenements/EV062 - Frein de stationnement non desserré (série 01).pdf",
+motsCles: ["ev062", "frein", "stationnement", "non", "desserré"]
+},
+{
+code: "EV062",
+titre: "Frein de stationnement non desserré(série 02)",
+chemin: "Evenements/EV062 - Frein de stationnement non desserré (série 02).pdf",
+motsCles: ["ev062", "frein", "stationnement", "non", "desserré"]
+},
+{
+code: "EV063",
+titre: "Panne patins de frein",
+chemin: "Evenements/EV063 - Panne patins de frein.pdf",
+motsCles: ["ev063", "panne", "patins", "frein"]
+},
+{
+code: "EV074",
+titre: "Poignée activée (série 01)",
+chemin: "Evenements/EV074 - Poignée activée (série 01).pdf",
+motsCles: ["ev074", "poignée", "activée"]
+},
+{
+code: "EV074",
+titre: "Poignée activée (série 02)",
+chemin: "Evenements/EV074 - Poignée activée (série 02).pdf",
+motsCles: ["ev074", "poignée", "activée"]
+},
+{
+code: "EV075",
+titre: "Panne grave portes",
+chemin: "Evenements/EV075 - Panne grave portes.pdf",
+motsCles: ["ev075", "panne", "grave", "portes"]
+},
+{
+code: "EV076",
+titre: "Panne portes",
+chemin: "Evenements/EV076 - Panne portes.pdf",
+motsCles: ["ev076", "panne", "portes"]
+},
+{
+code: "EV077",
+titre: "Porte condamnée",
+chemin: "Evenements/EV077 - Porte condamnée.pdf",
+motsCles: ["ev077", "porte", "condamnée"]
+},
+{
+code: "EV086",
+titre: "Panne climatisation salle",
+chemin: "Evenements/EV086 - Panne climatisation salle.pdf",
+motsCles: ["ev086", "panne", "climatisation", "salle"]
+},
+{
+code: "EV087",
+titre: "Ventilation hors service",
+chemin: "Evenements/EV087 - Ventilation hors service.pdf",
+motsCles: ["ev087", "panne", "climatisation", "cabine"]
+},
+{
+code: "EV088",
+titre: "Panne légère climatisation",
+chemin: "Evenements/EV088 - Panne légère climatisation.pdf",
+motsCles: ["ev088", "panne", "légère", "climatisation"]
+},
+{
+code: "EV090",
+titre: "Climatisation à 50%",
+chemin: "Evenements/EV090 - Climatisation à 50%.pdf",
+motsCles: ["ev090", "climatisation", "50%"]
+},
+{
+code: "EV091",
+titre: "Climatisation en mode manuel",
+chemin: "Evenements/EV091 - Climatisation en mode manuel.pdf",
+motsCles: ["ev091", "climatisation", "mode", "manuel"]
+},
+{
+code: "EV092",
+titre: "Climatisation mode ventilation",
+chemin: "Evenements/EV092 - Climatisation mode ventilation.pdf",
+motsCles: ["ev092", "climatisation", "mode", "ventilation"]
+},
+{
+code: "EV093",
+titre: "Panne SIV",
+chemin: "Evenements/EV093 - Panne SIV.pdf",
+motsCles: ["ev093", "panne", "siv"]
+},
+{
+code: "EV094",
+titre: "Suspension isolée",
+chemin: "Evenements/EV094 - Suspension isolée.pdf",
+motsCles: ["ev094", "suspension", "isolée"]
+},
+{
+code: "EV096",
+titre: "Commutateur trolley",
+chemin: "Evenements/EV096 - Commutateur trolley.pdf",
+motsCles: ["ev096", "frotteurs", "bas"]
+},
+{
+code: "EV097",
+titre: "Suspension en panne",
+chemin: "Evenements/EV097 - Suspension en panne.pdf",
+motsCles: ["ev097", "suspension", "panne"]
+},
+{
+code: "EV128",
+titre: "Dépréparation",
+chemin: "Evenements/EV128 - Dépréparation.pdf",
+motsCles: ["ev128", "dépréparation"]
+},
+{
+code: "EV129",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV129 - Disjoncteur ouvert.pdf",
+motsCles: ["ev129", "disjoncteur", "ouvert"]
+},
+{
+code: "EV130",
+titre: "Disjoncteurs de l'ATP est ouvert",
+chemin: "Evenements/EV130 - Disjoncteurs du circuit de l’ATP est ouvert.pdf",
+motsCles: ["ev130", "disjoncteurs", "atp", "ouvert"]
+},
+{
+code: "EV131",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV131 - Disjoncteur ouvert.pdf",
+motsCles: ["ev131", "disjoncteur", "ouvert"]
+},
+{
+code: "EV132",
+titre: "Disjoncteur ouvert",
+chemin: "Evenements/EV132 - Disjoncteur ouvert.pdf",
+motsCles: ["ev132", "disjoncteur", "ouvert"]
+},
+{
+code: "EV133",
+titre: "ATP en mode CML",
+chemin: "Evenements/EV133 - ATP en mode CML.pdf",
+motsCles: ["ev133", "atp", "mode", "cml"]
+},
+{
+code: "EV134",
+titre: "Panne relais cabine habilitée",
+chemin: "Evenements/EV134 - Panne relais cabine habilitée.pdf",
+motsCles: ["ev134", "panne", "relais", "cabine", "habilitée"]
+},
+{
+code: "EV136",
+titre: "Changement de cabine",
+chemin: "Evenements/EV136 - Changement de cabine.pdf",
+motsCles: ["ev136", "changement", "cabine"]
+},
+{
+code: "EV137",
+titre: "Forçage de l'ouverture des portes côté gauche",
+chemin: "Evenements/EV137 - Forçage de l’ouverture des portes côté gauche.pdf",
+motsCles: ["ev137", "forçage", "ouverture", "portes", "gauche"]
+},
+{
+code: "EV138",
+titre: "Forçage de l'ouverture des portes côté droit",
+chemin: "Evenements/EV138 - Forçage de l’ouverture des portes côté droit.pdf",
+motsCles: ["ev138", "forçage", "ouverture", "portes", "droit"]
+},
+{
+code: "EV139",
+titre: "Bouton ouverture directe des portes",
+chemin: "Evenements/EV139 - Bouton ouverture directe des portes.pdf",
+motsCles: ["ev139", "bouton", "ouverture", "directe", "portes"]
+},
+{
+code: "EV140",
+titre: "Shuntage boucle de frein (Boucle FU)",
+chemin: "Evenements/EV140 - Shuntage boucle de frein (Boucle FU).pdf",
+motsCles: ["ev140", "shuntage", "boucle", "frein", "fu"]
+},
+{
+code: "EV141",
+titre: "Pression basse dans la conduite principale",
+chemin: "Evenements/EV141 - Pression basse dans la conduite principale.pdf",
+motsCles: ["ev141", "pression", "basse", "conduite", "principale"]
+},
+{
+code: "EV142",
+titre: "Coup de poing",
+chemin: "Evenements/EV142 - Coup de poing.pdf",
+motsCles: ["ev142", "coup", "poing"]
+},
+{
+code: "EV143",
+titre: "Frein demandé par ATP",
+chemin: "Evenements/EV143 - Frein demandé par ATP.pdf",
+motsCles: ["ev143", "frein", "demandé", "atp"]
+},
+{
+code: "EV144",
+titre: "Isolement veille automatique",
+chemin: "Evenements/EV144 - Isolement veille automatique.pdf",
+motsCles: ["ev144", "isolement", "veille", "automatique"]
+},
+{
+code: "EV145",
+titre: "Frein par veille auto",
+chemin: "Evenements/EV145 - Frein par veille auto.pdf",
+motsCles: ["ev145", "frein", "veille", "auto"]
+},
+{
+code: "EV146",
+titre: "Panne veille automatique",
+chemin: "Evenements/EV146 - Panne veille automatique.pdf",
+motsCles: ["ev146", "panne", "veille", "automatique"]
+},
+{
+code: "EV147",
+titre: "Shunt boucle traction",
+chemin: "Evenements/EV147 - Shunt boucle traction.pdf",
+motsCles: ["ev147", "shunt", "boucle", "traction"]
+},
+{
+code: "EV148",
+titre: "Boucle traction ouverte",
+chemin: "Evenements/EV148 - Boucle traction ouverte.pdf",
+motsCles: ["ev148", "boucle", "traction", "ouverte"]
+},
+{
+code: "EV149",
+titre: "Shuntage de la boucle portes",
+chemin: "Evenements/EV149 - Shuntage de la boucle portes.pdf",
+motsCles: ["ev149", "panne", "grave", "portes"]
+},
+{
+code: "EV150",
+titre: "Charge batterie par HT (série 01)",
+chemin: "Evenements/EV150 - Charge batterie par HT (série 01).pdf",
+motsCles: ["ev150", "charge", "batterie", "ht"]
+},
+{
+
+code: "EV150",
+titre: "Charge batterie par HT (série 02)",
+chemin: "Evenements/EV150 - Charge batterie par HT (série 02).pdf",
+motsCles: ["ev150", "charge", "batterie", "ht"]
+},
+{
+code: "EV151",
+titre: "Panne grave manipulateur",
+chemin: "Evenements/EV151 - Panne grave manipulateur.pdf",
+motsCles: ["ev151", "panne", "grave", "manipulateur"]
+},
+{
+code: "EV152",
+titre: "Secours manipulateur",
+chemin: "Evenements/EV152 - Secours manipulateur.pdf",
+motsCles: ["ev152", "secours", "manipulateur"]
+},
+{
+code: "EV153",
+titre: "Panne Compresseur",
+chemin: "Evenements/EV153 - Panne Compresseur.pdf",
+motsCles: ["ev153", "panne", "compresseur"]
+},
+{
+code: "EV162",
+titre: "Panne grave ATC-A",
+chemin: "Evenements/EV162 - Panne grave ATC-A.pdf",
+motsCles: ["ev162", "panne", "grave", "atc-a"]
+},
+{
+code: "EV163",
+titre: "Panne grave ATC-B",
+chemin: "Evenements/EV163 - Panne grave ATC-B.pdf",
+motsCles: ["ev163", "panne", "grave", "atc-b"]
+},
+{
+code: "EV164",
+titre: "Panne légère ATC-A",
+chemin: "Evenements/EV164 - Panne légère ATC-A.pdf",
+motsCles: ["ev164", "panne", "légère", "atc-a"]
+},
+{
+code: "EV165",
+titre: "Panne légère ATC-B",
+chemin: "Evenements/EV165 - Panne légère ATC-B.pdf",
+motsCles: ["ev165", "panne", "légère", "atc-b"]
+},
+{
+code: "EV166",
+titre: "Panne TOD",
+chemin: "Evenements/EV166 - Panne TOD.pdf",
+motsCles: ["ev166", "panne", "tod"]
+},
+{
+code: "EV167",
+titre: "Panne enregistreur",
+chemin: "Evenements/EV167 - Panne enregistreur.pdf",
+motsCles: ["ev167", "panne", "enregistreur"]
+},
+{
+code: "EV168",
+titre: "Panne tachymètre de l’enregistreur",
+chemin: "Evenements/EV168 - Panne tachymètre de l’enregistreur.pdf",
+motsCles: ["ev168", "panne", "tachymètre", "enregistreur"]
+},
+{
+code: "EV169",
+titre: "Panne légère enregistreur",
+chemin: "Evenements/EV169 - Panne légère enregistreur.pdf",
+motsCles: ["ev169", "panne", "légère", "enregistreur"]
+},
+{
+code: "EV170",
+titre: "Shunt poignées d’urgence",
+chemin: "Evenements/EV170 - Shunt poignées d’urgence.pdf",
+motsCles: ["ev170", "shunt", "poignées", "urgence"]
+},
+{
+code: "EV171",
+titre: "Frein par poignée",
+chemin: "Evenements/EV171 - Frein par poignée.pdf",
+motsCles: ["ev171", "frein", "poignée"]
+},
+{
+code: "EV172",
+titre: "Veille auto en test",
+chemin: "Evenements/EV172 - Veille auto en test.pdf",
+motsCles: ["ev172", "veille", "auto", "test"]
+},
+{
+code: "EV173",
+titre: "Panne radio TETRA",
+chemin: "Evenements/EV173 - Panne radio TETRA.pdf",
+motsCles: ["ev173", "panne", "radio", "tetra"]
+},
+{
+code: "EV174",
+titre: "Panne grave CVS",
+chemin: "Evenements/EV174 - Panne grave CVS.pdf",
+motsCles: ["ev174", "panne", "grave", "cvs"]
+},
+{
+code: "EV175",
+titre: "Panne légère CVS",
+chemin: "Evenements/EV175 - Panne légère CVS.pdf",
+motsCles: ["ev175", "panne", "légère", "cvs"]
+},
+{
+code: "EV176",
+titre: "Panne chargeur batterie",
+chemin: "Evenements/EV176 - Panne chargeur batterie.pdf",
+motsCles: ["ev176", "panne", "chargeur", "batterie"]
+},
+{code: "EV177",
+titre: "Prise extérieure AC branchée",chemin: "Evenements/EV177 - Prise extérieure AC branchée.pdf",
+motsCles: ["ev177", "prise", "extérieure", "ac", "branchée"]
+},
+{
+code: "EV178",
+titre: "Shuntage tension minimale",
+chemin: "Evenements/EV178 - Shuntage tension minimale.pdf",
+motsCles: ["ev178", "shuntage", "tension", "ninimale"]
+},
+{
+code: "EV179",
+titre: "Tension batterie basse",
+chemin: "Evenements/EV179 - Tension batterie basse.pdf",
+motsCles: ["ev179", "tension", "batterie", "basse"]
+},
+{
+code: "EV181",
+titre: "Panne onduleur auxiliaire",
+chemin: "Evenements/EV181 - Panne onduleur auxiliaire.pdf",
+motsCles: ["ev181", "panne", "onduleur", "auxiliaire"]
+},
+{
+code: "EV182",
+titre: "Panne climatisation de la cabine",
+chemin: "Evenements/EV182 - Panne climatisation de la cabine.pdf",
+motsCles: ["ev182", "panne", "climatisation", "cabine"]
+},
+{
+code: "EV183",
+titre: "Panne 24V",
+chemin: "Evenements/EV183 - Panne 24V.pdf",
+motsCles: ["ev183", "panne", "24v"]
+},
+{
+code: "EV184",
+titre: "Panne désaccouplement (série 01)",
+chemin: "Evenements/EV184 - Panne désaccouplement (série 01).pdf",
+motsCles: ["ev184", "panne", "désaccouplement"]
+},
+{
+code: "EV184",
+titre: "Panne désaccouplement (série 02)",
+chemin: "Evenements/EV184 - Panne désaccouplement (série 02).pdf",
+motsCles: ["ev184", "panne", "désaccouplement"]
+},
+{
+code: "EV185",
+titre: "Train accouplé",
+chemin: "Evenements/EV185 - Train accouplé.pdf",
+motsCles: ["ev185", "train", "accouplé"]
+},
+{
+code: "EV186",
+titre: "Deux cabines habilitées - trains accouplés (série 01)",
+chemin: "Evenements/EV186 - Deux cabines habilitées - trains accouplés (série 01).pdf",
+motsCles: ["ev186", "cabines", "habilitées", "accouplés"]
+},
+{
+code: "EV186",
+titre: "Deux cabines habilitées - trains accouplés (série 02)",
+chemin: "Evenements/EV186 - Deux cabines habilitées - trains accouplés (série 02).pdf",
+motsCles: ["ev186", "cabines", "habilitées", "accouplés"]
+},
+{
+code: "EV187",
+titre: "Clé en cabine opposée",
+chemin: "Evenements/EV187 - Clé en cabine opposée.pdf",
+motsCles: ["ev187", "clé", "cabine", "opposée"]
+},
+{
+code: "EV188",
+titre: "Mode entretien",
+chemin: "Evenements/EV188 - Mode entretien.pdf",
+motsCles: ["ev188", "mode", "entretien"]
+},
+{
+code: "EV189",
+titre: "Mode accouplement",
+chemin: "Evenements/EV189 - Mode accouplement.pdf",
+motsCles: ["ev189", "mode", "accouplement"]
+},
+{
+code: "EV190",
+titre: "Mode lavage",
+chemin: "Evenements/EV190 - Mode lavage.pdf",
+motsCles: ["ev190", "mode", "lavage"]
+},
+{
+code: "EV191",
+titre: "Avertissement acoustiques des portes",
+chemin: "Evenements/EV191 - Avertissement acoustiques des portes.pdf",
+motsCles: ["ev191", "avertissement", "acoustiques", "portes"]
+},
+{
+code: "EV203",
+titre: "Panne sens de marche",
+chemin: "Evenements/EV203 - Panne sens de marche.pdf",
+motsCles: ["ev203", "panne", "sens", "marche"]
+},
+{
+code: "EV204",
+titre: "Panne radio ATC",
+chemin: "Evenements/EV204 - Panne radio ATC.pdf",
+motsCles: ["ev204", "panne", "radio", "atc"]
+},
+{
+code: "EV205",
+titre: "Panne roue phonique. A ATC",
+chemin: "Evenements/EV205 - Panne roue phonique. A ATC.pdf",
+motsCles: ["ev205", "panne", "roue", "phonique", "atc", "a"]
+},
+{
+code: "EV206",
+titre: "Panne roue phonique. B ATC",
+chemin: "Evenements/EV206 - Panne roue phonique. B ATC.pdf",
+motsCles: ["ev206", "panne", "roue", "phonique", "atc", "b"]
+},
+{
+code: "EV207",
+titre: "Combiné SIV décroché",
+chemin: "Evenements/EV207 - Combiné SIV décroché.pdf",
+motsCles: ["ev207", "combiné", "siv", "décroché"]
+},
+{
+code: "EV208",
+titre: "BCU Remorque, Motrices",
+chemin: "Evenements/EV208 - BCU Remorque, Motrices.pdf",
+motsCles: ["ev208", "BCU", "remorque", "motrice"]
+},
+{
+code: "EV210",
+titre: "Panne SIV",
+chemin: "Evenements/EV210 - Panne SIV.pdf",
+motsCles: ["ev210", "panne", "siv"]
+},
+{
+code: "EV211",
+titre: "Panne SIV",
+chemin: "Evenements/EV211 - Panne SIV.pdf",
+motsCles: ["ev211", "panne", "siv"]
+},
+{
+code: "EV212",
+titre: "Panne SIV",
+chemin: "Evenements/EV212 - Panne SIV.pdf",
+motsCles: ["ev212", "panne", "siv"]
+},
+{
+code: "EV213",
+titre: "Panne SIV",
+chemin: "Evenements/EV213 - Panne SIV.pdf",
+motsCles: ["ev213", "panne", "siv"]
+},
+{
+code: "EV214",
+titre: "Panne SIV",
+chemin: "Evenements/EV214 - Panne SIV.pdf",
+motsCles: ["ev214", "panne", "siv"]
+},
+{
+code: "EV215",
+titre: "Panne SIV",
+chemin: "Evenements/EV215 - Panne SIV.pdf",
+motsCles: ["ev215", "panne", "siv"]
+},
+{
+code: "EV216",
+titre: "Panne SIV",
+chemin: "Evenements/EV216 - Panne SIV.pdf",
+motsCles: ["ev216", "panne", "siv"]
+},
+{
+code: "EV217",
+titre: "Panne SIV",
+chemin: "Evenements/EV217 - Panne SIV.pdf",
+motsCles: ["ev217", "panne", "siv"]
+},
+{
+code: "EV218",
+titre: "Panne SIV",
+chemin: "Evenements/EV218 - Panne SIV.pdf",
+motsCles: ["ev218", "panne", "siv"]
+},
+{
+code: "EV219",
+titre: "Panne SIV",
+chemin: "Evenements/EV219 - Panne SIV.pdf",
+motsCles: ["ev219", "panne", "siv"]
+},
+{
+code: "EV220",
+titre: "Défaillance interphone d’urgence",
+chemin: "Evenements/EV220 - Défaillance interphone d’urgence.pdf",
+motsCles: ["ev220", "Défaillance", "interphone", "urgence"]
+},
+{
+code: "EV221",
+titre: "Panne SIV",
+chemin: "Evenements/EV221 - Panne SIV.pdf",
+motsCles: ["ev221", "panne", "siv"]
+}
+];
+
+const fiches = [
+{
+code: "AE1",
+titre: "Rupture d'attelage",
+chemin: "Fiches_MR/Fiche AE1 - Rupture d'attelage.pdf",
+motsCles: ["ae1", "rupture", "attelage"]
+},
+{
+code: "AE2",
+titre: "Déraillement, engagement du gabarit",
+chemin: "Fiches_MR/Fiche AE2 - Déraillement, engagement du gabarit.pdf",
+motsCles: ["ae2", "déraillement", "engagement", "gabarit"]
+},
+{
+code: "AE3",
+titre: "Avarie d'une boite d'essieu",
+chemin: "Fiches_MR/Fiche AE3 - Avarie d'une boite d'essieu.pdf",
+motsCles: ["ae3", "avarie", "boite", "essieu"]
+},
+{
+code: "AE4",
+titre: "Résistance anormale au roulement en station (série 01)",
+chemin: "Fiches_MR/Fiche AE4 - Résistance anormale au roulement en station (série 01).pdf",
+motsCles: ["ae4", "résistance", "anormale", "roulement", "station"]
+},
+{
+code: "AE4",
+titre: "Résistance anormale au roulement en station (série 02)",
+chemin: "Fiches_MR/Fiche AE4 - Résistance anormale au roulement en station (série 02).pdf",
+motsCles: ["ae4", "résistance", "anormale", "roulement", "station"]
+},
+{
+code: "AE5",
+titre: "Résistance anormale au roulement en inter-station (série 01)",
+chemin: "Fiches_MR/Fiche AE5 - Résistance anormale au roulement en inter-station (série 01).pdf",
+motsCles: ["ae5", "résistance", "anormale", "roulement", "inter-station"]
+},
+{
+code: "AE5",
+titre: "Résistance anormale au roulement en inter-station (série 02)",
+chemin: "Fiches_MR/Fiche AE5 - Résistance anormale au roulement en inter-station (série 02).pdf",
+motsCles: ["ae5", "résistance", "anormale", "roulement", "inter-station"]
+},
+{
+code: "AE6",
+titre: "Avarie d'un réducteur S rupture d'une dent d'engrenage",
+chemin: "Fiches_MR/Fiche AE6 - Avarie d'un réducteur S rupture d'une dent d'engrenage.pdf",
+motsCles: ["ae6", "avarie", "réducteur", "rupture", "dent", "engrenage"]
+},
+{
+code: "AE7",
+titre: "Rupture d'une pièce mécanique",
+chemin: "Fiches_MR/Fiche AE7 - Rupture d'une pièce mécanique.pdf",
+motsCles: ["ae7", "rupture", "pièce", "mécanique"]
+},
+{
+code: "AE8",
+titre: "Non préparation d'un train au dégarage",
+chemin: "Fiches_MR/Fiche AE8 - Non préparation d'un train au dégarage.pdf",
+motsCles: ["ae8", "non", "préparation", "train", "dégarage"]
+},
+{
+code: "AE9",
+titre: "Conduite depuis la cabine arrière",
+chemin: "Fiches_MR/Fiche AE9 - Conduite depuis la cabine arrière.pdf",
+motsCles: ["ae9", "conduite", "cabine", "arrière"]
+},
+{
+code: "AE10",
+titre: "Conduite en mode secours SCMT",
+chemin: "Fiches_MR/Fiche AE10 - Conduite en mode secours SCMT.pdf",
+motsCles: ["ae10", "conduite", "mode", "secours", "scmt"]
+},
+{
+code: "AE11",
+titre: "Secours d'un train (série 01)",
+chemin: "Fiches_MR/Fiche AE11 - Secours d'un train.pdf",
+motsCles: ["ae11", "secours", "train"]
+},
+{
+code: "AE11",
+titre: "Secours d'un train (série 02)",
+chemin: "Fiches_MR/Fiche AE11 - Secours d'un train.pdf",
+motsCles: ["ae11", "secours", "train"]
+},
+{
+code: "AE12",
+titre: "Train portant secours (série 01)",
+chemin: "Fiches_MR/Fiche AE12 - Train portant secours (série 01).pdf",
+motsCles: ["ae12", "train", "portant", "secours"]
+},
+{
+code: "AE12",
+titre: "Train portant secours (série 02)",
+chemin: "Fiches_MR/Fiche AE12 - Train portant secours (série 02).pdf",
+motsCles: ["ae12", "train", "portant", "secours"]
+},
+{
+code: "AE13",
+titre: "Mise en mouvement d'un convoi (série 01)",
+chemin: "Fiches_MR/Fiche AE13 - Mise en mouvement d'un convoi (série 01).pdf",
+motsCles: ["ae13", "mise", "mouvement", "convoi"]
+},
+{
+code: "AE13",
+titre: "Mise en mouvement d'un convoi (série 02)",
+chemin: "Fiches_MR/Fiche AE13 - Mise en mouvement d'un convoi (série 02).pdf",
+motsCles: ["ae13", "mise", "mouvement", "convoi"]
+},
+{
+code: "AE14",
+titre: "Désaccouplement de deux trains",
+chemin: "Fiches_MR/Fiche AE14 - Désaccouplement de deux trains.pdf",
+motsCles: ["ae14", "désaccouplement", "trains"]
+},
+{
+code: "AE15",
+titre: "Réarmement manuel de l'attelage (série 01)",
+chemin: "Fiches_MR/Fiche AE15 - Réarmement manuel de l'attelage (série 01).pdf",
+motsCles: ["ae15", "réarmement", "manuel", "attelage"]
+},
+{
+code: "AE15",
+titre: "Réarmement manuel de l'attelage (série 02)",
+chemin: "Fiches_MR/Fiche AE15 - Réarmement manuel de l'attelage (série 02).pdf",
+motsCles: ["ae15", "réarmement", "manuel", "attelage"]
+},
+{
+code: "AE16",
+titre: "Utilisation de l'échelle",
+chemin: "Fiches_MR/Fiche AE16 - Utilisation de l'échelle.pdf",
+motsCles: ["ae16", "utilisation", "échelle"]
+},
+{
+code: "BAI",
+titre: "Bruit anormal en inter-station",
+chemin: "Fiches_MR/Fiche BAI - Bruit anormal en inter-station.pdf",
+motsCles: ["bai", "bruit", "anormal", "inter-station"]
+},
+{
+code: "BAS",
+titre: "Bruit anormal en station",
+chemin: "Fiches_MR/Fiche BAS - Bruit anormal en station.pdf",
+motsCles: ["bas", "bruit", "anormal", "station"]
+},
+{
+code: "CC",
+titre: "Court-circuit",
+chemin: "Fiches_MR/Fiche CC - Court-circuit.pdf",
+motsCles: ["cc", "court-circuit"]
+},
+{
+code: "CHT1",
+titre: "Isolement pneumatique des frotteurs",
+chemin: "Fiches_MR/Fiche CHT1 - Isolement pneumatique des frotteurs.pdf",
+motsCles: ["cht1", "isolement", "pneumatique", "frotteurs"]
+},
+{
+code: "CHT2",
+titre: "Panne frotteurs",
+chemin: "Fiches_MR/Fiche CHT2 - Panne frotteurs.pdf",
+motsCles: ["cht2", "panne", "frotteurs"]
+},
+{
+code: "CHT3",
+titre: "Frotteurs bas",
+chemin: "Fiches_MR/Fiche CHT3 - Frotteurs bas.pdf",
+motsCles: ["cht3", "frotteurs", "bas"]
+},
+{
+code: "CHT4",
+titre: "Trolley M2 pas M1",
+chemin: "Fiches_MR/Fiche CHT4 - Trolley M2 pas M1.pdf",
+motsCles: ["cht4", "trolley", "m2", "pas", "m1"]
+},
+{
+code: "CHT5",
+titre: "Frotteurs bas",
+chemin: "Fiches_MR/Fiche CHT5 - Frotteurs bas.pdf",
+motsCles: ["cht5", "frotteurs", "bas"]
+},
+{
+code: "CHT6",
+titre: "Trolley branchée",
+chemin: "Fiches_MR/Fiche CHT6 - Trolley branchée.pdf",
+motsCles: ["cht6", "trolley", "branchée"]
+},
+{
+code: "CHT7",
+titre: "Courant coupé",
+chemin: "Fiches_MR/Fiche CHT7 - Courant coupé.pdf",
+motsCles: ["cht7", "courant", "coupé"]
+},
+{
+code: "CHT8",
+titre: "Panne circuit isolement",
+chemin: "Fiches_MR/Fiche CHT8 - Panne circuit isolement.pdf",
+motsCles: ["cht8", "panne", "circuit", "isolement"]
+},
+{
+code: "CHT9",
+titre: "Rame isolée",
+chemin: "Fiches_MR/Fiche CHT9 - Rame isolée.pdf",
+motsCles: ["cht9", "rame", "isolée"]
+},
+{
+code: "CHT10",
+titre: "Commutateur mise à la terre",
+chemin: "Fiches_MR/Fiche CHT10 - Commutateur mise à la terre.pdf",
+motsCles: ["cht10", "commutateur", "mise", "terre"]
+},
+{
+code: "CP1",
+titre: "Pression basse dans la conduite principale",
+chemin: "Fiches_MR/Fiche CP1 - Pression basse dans la conduite principale.pdf",
+motsCles: ["cp1", "pression", "basse", "conduite", "principale"]
+},
+{
+code: "CP2",
+titre: "Isolement, pneumatique de la voiture",
+chemin: "Fiches_MR/Fiche CP2 - Isolement, pneumatique de la voiture.pdf",
+motsCles: ["cp2", "isolement", "pneumatique", "voiture"]
+},
+{
+code: "CP3",
+titre: "Panne Compresseur",
+chemin: "Fiches_MR/Fiche CP3 - Panne Compresseur.pdf",
+motsCles: ["cp3", "panne", "compresseur"]
+},
+{
+code: "CV1",
+titre: "Ventilation des équipements de traction",
+chemin: "Fiches_MR/Fiche CV1 - Ventilation des équipements de traction.pdf",
+motsCles: ["cv1", "ventilation", "équipements", "traction"]
+},
+{
+code: "CV2",
+titre: "Panne climatisation de la cabine",
+chemin: "Fiches_MR/Fiche CV2 - Panne climatisation de la cabine.pdf",
+motsCles: ["cv2", "panne", "climatisation", "cabine"]
+},
+{
+code: "CV3",
+titre: "Panne climatisation salle",
+chemin: "Fiches_MR/Fiche CV3 - Panne climatisation salle.pdf",
+motsCles: ["cv3", "panne", "climatisation", "salle"]
+},
+{
+code: "CV4",
+titre: "Panne climatisation de la cabine",
+chemin: "Fiches_MR/Fiche CV4 - Panne climatisation de la cabine.pdf",
+motsCles: ["cv4", "panne", "climatisation", "cabine"]
+},
+{
+code: "CV5",
+titre: "Panne légère climatisation",
+chemin: "Fiches_MR/Fiche CV5 - Panne légère climatisation.pdf",
+motsCles: ["cv5", "panne", "légère", "climatisation"]
+},
+{
+code: "CV6",
+titre: "Climatisation à 50%",
+chemin: "Fiches_MR/Fiche CV6 - Climatisation à 50%.pdf",
+motsCles: ["cv6", "climatisation", "50%"]
+},
+{
+code: "CV7",
+titre: "Climatisation en mode manuel",
+chemin: "Fiches_MR/Fiche CV7- Climatisation en mode manuel.pdf",
+motsCles: ["cv7", "climatisation", "mode", "manuel"]
+},
+{
+code: "CV8",
+titre: "Climatisation mode ventilation",
+chemin: "Fiches_MR/Fiche CV8 - Climatisation mode ventilation.pdf",
+motsCles: ["cv8", "climatisation", "mode", "ventilation"]
+},
+{
+code: "D1",
+titre: "Disjoncteur ouvert",
+chemin: "Fiches_MR/Fiche D1 - Disjoncteur ouvert.pdf",
+motsCles: ["d1", "disjoncteur", "ouvert"]
+},
+{
+code: "D2",
+titre: "Panne disjoncteur traction (série 01)",
+chemin: "Fiches_MR/Fiche D2 - Panne disjoncteur traction (série 01).pdf",
+motsCles: ["d2", "panne", "disjoncteur", "traction"]
+},
+{
+code: "D2",
+titre: "Panne disjoncteur traction (série 02)",
+chemin: "Fiches_MR/Fiche D2 - Panne disjoncteur traction (série 02).pdf",
+motsCles: ["d2", "panne", "disjoncteur", "traction"]
+},
+{
+code: "D3",
+titre: "Disjoncteur du circuit de traction ouvert (série 01)",
+chemin: "Fiches_MR/Fiche D3 - Disjoncteur du circuit de traction ouvert (série 01).pdf",
+motsCles: ["d3", "disjoncteur", "circuit", "traction", "ouvert"]
+},
+{
+code: "D3",
+titre: "Disjoncteur du circuit de traction ouvert (série 02)",
+chemin: "Fiches_MR/Fiche D3 - Disjoncteur du circuit de traction ouvert (série 02).pdf",
+motsCles: ["d3", "disjoncteur", "circuit", "traction", "ouvert"]
+},
+{
+code: "D4",
+titre: "Panne disjoncteur circuit de commande",
+chemin: "Fiches_MR/Fiche D4 - Panne disjoncteur circuit de commande.pdf",
+motsCles: ["d4", "panne", "disjoncteur", "circuit", "commande"]
+},
+{
+code: "D5",
+titre: "Panne disjoncteur circuit de frein ouvert",
+chemin: "Fiches_MR/Fiche D5 - Panne disjoncteur circuit de frein ouvert.pdf",
+motsCles: ["d5", "panne", "disjoncteur", "frein", "ouvert"]
+},
+{
+code: "D6",
+titre: "Panne disjoncteur circuit de sécurité ouvert (série 01)",
+chemin: "Fiches_MR/Fiche D6 - Panne disjoncteur circuit de sécurité ouvert (série 01).pdf",
+motsCles: ["d6", "panne", "disjoncteur", "sécurité", "ouvert"]
+},
+{
+code: "D6",
+titre: "Panne disjoncteur circuit de sécurité ouvert (série 02)",
+chemin: "Fiches_MR/Fiche D6 - Panne disjoncteur circuit de sécurité ouvert (série 02).pdf",
+motsCles: ["d6", "panne", "disjoncteur", "sécurité", "ouvert"]
+},
+{
+code: "D7",
+titre: "Panne disjoncteur commande portes",
+chemin: "Fiches_MR/Fiche D7 - Panne disjoncteur commande portes.pdf",
+motsCles: ["d7", "panne", "disjoncteur", "commande", "portes"]
+},
+{
+code: "D8",
+titre: "Panne Disjoncteur TCMS (SCMT)",
+chemin: "Fiches_MR/Fiche D8 - Panne Disjoncteur TCMS (SCMT).pdf",
+motsCles: ["d8", "panne", "disjoncteur", "tcms", "scmt"]
+},
+{
+code: "D9",
+titre: "Panne disjoncteur charges essentielles",
+chemin: "Fiches_MR/Fiche D9 - Panne disjoncteur charges essentielles.pdf",
+motsCles: ["d9", "panne", "disjoncteur", "charges", "essentielles"]
+},
+{
+code: "D10",
+titre: "Panne disjoncteur alimentation coffre traction",
+chemin: "Fiches_MR/Fiche D10 - Panne disjoncteur alimentation coffre traction.pdf",
+motsCles: ["d10", "panne", "disjoncteur", "alimentation", "coffre", "traction"]
+},
+{
+code: "D11",
+titre: "Disjoncteur d'isolement demi-rame",
+chemin: "Fiches_MR/Fiche D11 - Disjoncteur d'isolement demi-rame.pdf",
+motsCles: ["d11", "disjoncteur", "isolement", "demi-rame"]
+},
+{
+code: "D12",
+titre: "Disjoncteurs du circuit de l'ATP est ouvert",
+chemin: "Fiches_MR/Fiche D12 - Disjoncteurs du circuit de l'ATP est ouvert.pdf",
+motsCles: ["d12", "disjoncteurs", "circuit", "atp", "ouvert"]
+},
+{
+code: "DFM",
+titre: "Dégagement de fumée maitrisable",
+chemin: "Fiches_MR/Fiche DFM - Dégagement de fumée maitrisable.pdf",
+motsCles: ["dfm", "dégagement", "fumée", "maitrisable"]
+},
+{
+code: "DFN",
+titre: "Dégagement de fumée non-maitrisable",
+chemin: "Fiches_MR/Fiche DFN - Dégagement de fumée non-maitrisable.pdf",
+motsCles: ["dfn", "dégagement", "fumée", "non-maitrisable"]
+},
+{
+code: "EPE1",
+titre: "Panne grave ATC-A",
+chemin: "Fiches_MR/Fiche EPE1 - Panne grave ATC-A.pdf",
+motsCles: ["epe1", "panne", "grave", "atc-a"]
+},
+{
+code: "EPE2",
+titre: "Panne grave ATC-B",
+chemin: "Fiches_MR/Fiche EPE2 - Panne grave ATC-B.pdf",
+motsCles: ["epe2", "panne", "grave", "atc-b"]
+},
+{
+code: "EPE3",
+titre: "Panne légère ATC-A",
+chemin: "Fiches_MR/Fiche EPE3 - Panne légère ATC-A.pdf",
+motsCles: ["epe3", "panne", "légère", "atc-a"]
+},
+{
+code: "EPE4",
+titre: "Panne légère ATC-B",
+chemin: "Fiches_MR/Fiche EPE4 - Panne légère ATC-B.pdf",
+motsCles: ["epe4", "panne", "légère", "atc-b"]
+},
+{
+code: "EPE5",
+titre: "Panne TOD",
+chemin: "Fiches_MR/Fiche EPE5 - Panne TOD.pdf",
+motsCles: ["epe5", "panne", "tod"]
+},
+{
+code: "EPE6",
+titre: "Panne radio ATC",
+chemin: "Fiches_MR/Fiche EPE6 - Panne radio ATC.pdf",
+motsCles: ["epe6", "panne", "radio", "atc"]
+},
+{
+code: "EPE7",
+titre: "Panne roue phonique. A ATC",
+chemin: "Fiches_MR/Fiche EPE7 - Panne roue phonique. A ATC.pdf",
+motsCles: ["epe7", "panne", "roue", "phonique", "a", "atc"]
+},
+{
+code: "EPE8",
+titre: "Panne roue phonique. B ATC",
+chemin: "Fiches_MR/Fiche EPE8 - Panne roue phonique. B ATC.pdf",
+motsCles: ["epe8", "panne", "roue", "phonique", "b", "atc"]
+},
+{
+code: "EPE9",
+titre: "Panne enregistreur",
+chemin: "Fiches_MR/Fiche EPE9 - Panne enregistreur.pdf",
+motsCles: ["epe9", "panne", "enregistreur"]
+},
+{
+code: "EPE10",
+titre: "Panne tachymètre de l'enregistreur",
+chemin: "Fiches_MR/Fiche EPE10 - Panne tachymètre de l'enregistreur.pdf",
+motsCles: ["epe10", "panne", "tachymètre", "enregistreur"]
+},
+{
+code: "EPE11",
+titre: "Panne légère enregistreur",
+chemin: "Fiches_MR/Fiche EPE11 - Panne légère enregistreur.pdf",
+motsCles: ["epe11", "panne", "légère", "enregistreur"]
+},
+{
+code: "EPE12",
+titre: "ATP en mode CML",
+chemin: "Fiches_MR/Fiche EPE12 - ATP en mode CML.pdf",
+motsCles: ["epe12", "atp", "mode", "cml"]
+},
+{
+code: "ETM",
+titre: "Extinction du TMC",
+chemin: "Fiches_MR/Fiche ETM - Extinction du TMC.pdf",
+motsCles: ["etm", "extinction", "tmc"]
+},
+{
+code: "ETO",
+titre: "Extinction du TOD",
+chemin: "Fiches_MR/Fiche ETO - Extinction du TOD.pdf",
+motsCles: ["eto", "extinction", "tod"]
+},
+{
+code: "F1",
+titre: "Shuntage boucle de frein (Boucle FU)",
+chemin: "Fiches_MR/Fiche F1 - Shuntage boucle de frein (Boucle FU).pdf",
+motsCles: ["f1", "shuntage", "boucle", "frein", "fu"]
+},
+{
+code: "F2",
+titre: "Frein d'urgence",
+chemin: "Fiches_MR/Fiche F2 - Frein d'urgence.pdf",
+motsCles: ["f2", "frein", "urgence"]
+},
+{
+code: "F3",
+titre: "Coup de poing",
+chemin: "Fiches_MR/Fiche F3 - Coup de poing.pdf",
+motsCles: ["f3", "coup", "poing"]
+},
+{
+code: "F4",
+titre: "Frein demandé par ATP",
+chemin: "Fiches_MR/Fiche F4 - Frein demandé par ATP.pdf",
+motsCles: ["f4", "frein", "demandé", "atp"]
+},
+{
+code: "F5",
+titre: "Frein par veille auto",
+chemin: "Fiches_MR/Fiche F5 - Frein par veille auto.pdf",
+motsCles: ["f5", "frein", "veille", "auto"]
+},
+{
+code: "F6",
+titre: "Panne grave frein pneumatique",
+chemin: "Fiches_MR/Fiche F6 - Panne grave frein pneumatique.pdf",
+motsCles: ["f6", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "F7",
+titre: "Panne grave frein pneumatique",
+chemin: "Fiches_MR/Fiche F7 - Panne grave frein pneumatique.pdf",
+motsCles: ["f7", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "F8",
+titre: "Panne grave frein pneumatique",
+chemin: "Fiches_MR/Fiche F8 - Panne grave frein pneumatique.pdf",
+motsCles: ["f8", "panne", "grave", "frein", "pneumatique"]
+},
+{
+code: "F9",
+titre: "Frein isolé avec B22 (série 01)",
+chemin: "Fiches_MR/Fiche F9 - Frein isolé avec B22 (série 01).pdf",
+motsCles: ["f9", "frein", "isolé", "b22"]
+},
+{
+code: "F9",
+titre: "Frein isolé avec B22 (série 02)",
+chemin: "Fiches_MR/Fiche F9 - Frein isolé avec B22 (série 02).pdf",
+motsCles: ["f9", "frein", "isolé", "b22"]
+},
+{
+code: "F10",
+titre: "Isolement électrique du frein pneumatique",
+chemin: "Fiches_MR/Fiche F10 - Isolement électrique du frein pneumatique.pdf",
+motsCles: ["f10", "isolement", "électrique", "frein", "pneumatique"]
+},
+{
+code: "F11",
+titre: "Panne grave BCU",
+chemin: "Fiches_MR/Fiche F11 - Panne grave BCU.pdf",
+motsCles: ["f11", "panne", "grave", "bcu"]
+},
+{
+code: "F12",
+titre: "Panne légère BCU",
+chemin: "Fiches_MR/Fiche F12 - Panne légère BCU.pdf",
+motsCles: ["f12", "panne", "légère", "bcu"]
+},
+{
+code: "F14",
+titre: "Train sans Frein de Stationnement (série 01)",
+chemin: "Fiches_MR/Fiche F14 - Train sans Frein de Stationnement (série 01).pdf",
+motsCles: ["f14", "train", "frein", "stationnement", "sans"]
+},
+{
+code: "F14",
+titre: "Train sans Frein de Stationnement (série 02)",
+chemin: "Fiches_MR/Fiche F14 - Train sans Frein de Stationnement (série 02).pdf",
+motsCles: ["f14", "train", "frein", "stationnement", "sans"]
+},
+{
+code: "F15",
+titre: "Isolement pneumatique du frein de Stationnement",
+chemin: "Fiches_MR/Fiche F15 - Isolement pneumatique du frein de Stationnement.pdf",
+motsCles: ["f15", "isolement", "pneumatique", "frein", "stationnement"]
+},
+{
+code: "F16",
+titre: "Frein de stationnement serré",
+chemin: "Fiches_MR/Fiche F16 - Frein de stationnement serré.pdf",
+motsCles: ["f16", "frein", "stationnement", "serre"]
+},
+{
+code: "F17",
+titre: "Electrovalve du frein de Stationnement activée (série 01)",
+chemin: "Fiches_MR/Fiche F17 - Electrovalve du frein de Stationnement activée (série 01).pdf",
+motsCles: ["f17", "electrovalve", "frein", "stationnement", "activée"]
+},
+{
+code: "F17",
+titre: "Electrovalve du frein de Stationnement activée (série 02)",
+chemin: "Fiches_MR/Fiche F17 - Electrovalve du frein de Stationnement activée (série 02).pdf",
+motsCles: ["f17", "electrovalve", "frein", "stationnement", "activée"]
+},
+{
+code: "F18",
+titre: "Frein de stationnement non desserré (série 01)",
+chemin: "Fiches_MR/Fiche F18 - Frein de stationnement non desserré (série 01).pdf",
+motsCles: ["f18", "frein", "stationnement", "non", "desserré"]
+},
+{
+code: "F18",
+titre: "Frein de stationnement non desserré (série 02)",
+chemin: "Fiches_MR/Fiche F18 - Frein de stationnement non desserré (série 02).pdf",
+motsCles: ["f18", "frein", "stationnement", "non", "desserré"]
+},
+{
+code: "F19",
+titre: "Panne patins de frein",
+chemin: "Fiches_MR/Fiche F19 - Panne patins de frein.pdf",
+motsCles: ["f19", "panne", "patins", "frein"]
+},
+{
+code: "F20",
+titre: "Frein par poignée",
+chemin: "Fiches_MR/Fiche F20 - Frein par poignée.pdf",
+motsCles: ["f20", "frein", "poignée"]
+},
+{
+code: "F21",
+titre: "Panne anti-enrayeur",
+chemin: "Fiches_MR/Fiche F21 - Panne anti-enrayeur.pdf",
+motsCles: ["f21", "panne", "anti-enrayeur"]
+},
+{
+code: "F22",
+titre: "BCU Remorque, Motrices",
+chemin: "Fiches_MR/Fiches_MR F22 - BCU Remorque, Motrices.pdf",
+motsCles: ["f22", "BCU", "remorque", "motrice"]
+},
+{
+code: "F43",
+titre: "Frein électrique HS",
+chemin: "Fiches_MR/Fiche F43 - Frein électrique HS.pdf",
+motsCles: ["f43", "frein", "électrique", "hs"]
+},
+{
+code: "IEM",
+titre: "Isolement électrique d'une motrice (série 01)",
+chemin: "Fiches_MR/Fiche IEM - Isolement électrique d'une motrice (série 01).pdf",
+motsCles: ["iem", "isolement", "électrique", "motrice"]
+},
+{
+code: "IEM",
+titre: "Isolement électrique d'une motrice (série 02)",
+chemin: "Fiches_MR/Fiche IEM - Isolement électrique d'une motrice (série 02).pdf",
+motsCles: ["iem", "isolement", "électrique", "motrice"]
+},
+{
+code: "MBT1",
+titre: "Fusible convertisseur statique",
+chemin: "Fiches_MR/Fiche MBT1 - Fusible convertisseur statique.pdf",
+motsCles: ["mbt1", "fusible", "convertisseur", "statique"]
+},
+{
+code: "MBT2",
+titre: "Panne grave CVS",
+chemin: "Fiches_MR/Fiche MBT2 - Panne grave CVS.pdf",
+motsCles: ["mbt2", "panne", "grave", "cvs"]
+},
+{
+code: "MBT3",
+titre: "Panne légère CVS",
+chemin: "Fiches_MR/Fiche MBT3 - Panne légère CVS.pdf",
+motsCles: ["mbt3", "panne", "légère", "cvs"]
+},
+{
+code: "MBT4",
+titre: "Prise extérieure AC branchée",
+chemin: "Fiches_MR/Fiche MBT4 - Prise extérieure AC branchée.pdf",
+motsCles: ["mbt4", "prise", "extérieure", "ac", "branchée"]
+},
+{
+code: "MBT5",
+titre: "Panne onduleur auxiliaire",
+chemin: "Fiches_MR/Fiche MBT5 - Panne onduleur auxiliaire.pdf",
+motsCles: ["mbt5", "panne", "onduleur", "auxiliaire"]
+},
+{
+code: "MBT6",
+titre: "Charge batterie par HT (série 01)",
+chemin: "Fiches_MR/Fiche MBT6 - Charge batterie par HT.pdf",
+motsCles: ["mbt6", "charge", "batterie", "ht"]
+},
+{
+code: "MBT6",
+titre: "Charge batterie par HT (série 02)",
+chemin: "Fiches_MR/Fiche MBT6 - Charge batterie par HT.pdf",
+motsCles: ["mbt6", "charge", "batterie", "ht"]
+},
+{
+code: "MBT7",
+titre: "Panne chargeur batterie",
+chemin: "Fiches_MR/Fiche MBT7 - Panne chargeur batterie.pdf",
+motsCles: ["mbt7", "panne", "chargeur", "batterie"]
+},
+{
+code: "MBT8",
+titre: "Tension batterie basse",
+chemin: "Fiches_MR/Fiche MBT8 - Tension batterie basse.pdf",
+motsCles: ["mbt8", "tension", "batterie", "basse"]
+},
+{
+code: "MBT9",
+titre: "Shuntage tension minimale",
+chemin: "Fiches_MR/Fiche MBT9 - Shuntage tension minimale.pdf",
+motsCles: ["mbt9", "shuntage", "tension", "minimale"]
+},
+{
+code: "MBT10",
+titre: "Panne légère répétiteur MVB",
+chemin: "Fiches_MR/Fiche MBT10 - Panne légère répétiteur MVB.pdf",
+motsCles: ["mbt10", "panne", "légère", "répétiteur", "mvb"]
+},
+{
+code: "MBT11",
+titre: "Panne 24V",
+chemin: "Fiches_MR/Fiche MBT11 - Panne 24V.pdf",
+motsCles: ["mbt11", "panne", "24v"]
+},
+{
+code: "MBT12",
+titre: "Shunt poignées d'urgence",
+chemin: "Fiches_MR/Fiche MBT12 - Shunt poignées d'urgence.pdf",
+motsCles: ["mbt12", "shunt", "poignées", "urgence"]
+},
+{
+code: "MBT13",
+titre: "Poignée activée (série 01)",
+chemin: "Fiches_MR/Fiche MBT13 - Poignée activée.pdf",
+motsCles: ["mbt13", "poignée", "activée"]
+},
+{
+code: "MBT13",
+titre: "Poignée activée (série 02)",
+chemin: "Fiches_MR/Fiche MBT13 - Poignée activée.pdf",
+motsCles: ["mbt13", "poignée", "activée"]
+},
+{
+code: "MS1",
+titre: "Mode entretien",
+chemin: "Fiches_MR/Fiche MS1 - Mode entretien.pdf",
+motsCles: ["ms1", "mode", "entretien"]
+},
+{
+code: "MS2",
+titre: "Mode accouplement",
+chemin: "Fiches_MR/Fiche MS2 - Mode accouplement.pdf",
+motsCles: ["ms2", "mode", "accouplement"]
+},
+{
+code: "MS3",
+titre: "Mode lavage",
+chemin: "Fiches_MR/Fiche MS3 - Mode lavage.pdf",
+motsCles: ["ms3", "mode", "lavage"]
+},
+{
+code: "MS4",
+titre: "Panne désaccouplement (série 01)",
+chemin: "Fiches_MR/Fiche MS4 - Panne désaccouplement.pdf",
+motsCles: ["ms4", "panne", "désaccouplement"]
+},
+{
+code: "MS4",
+titre: "Panne désaccouplement (série 02)",
+chemin: "Fiches_MR/Fiche MS4 - Panne désaccouplement.pdf",
+motsCles: ["ms4", "panne", "désaccouplement"]
+},
+{
+code: "MS5",
+titre: "Train ccouplé",
+chemin: "Fiches_MR/Fiche MS5 - Train ccouplé.pdf",
+motsCles: ["ms5", "train", "ccouplé"]
+},
+{
+code: "MS6",
+titre: "Deux cabines habilitées - trains accouplés (série 01)",
+chemin: "Fiches_MR/Fiche MS6 - Deux cabines habilitées - trains accouplés (série 01).pdf",
+motsCles: ["ms6", "cabines", "habilitées", "accouplés"]
+},
+{
+code: "MS6",
+titre: "Deux cabines habilitées - trains accouplés (série 02)",
+chemin: "Fiches_MR/Fiche MS6 - Deux cabines habilitées - trains accouplés (série 02).pdf",
+motsCles: ["ms6", "cabines", "habilitées", "accouplés"]
+},
+{
+code: "P1",
+titre: "Panne portes",
+chemin: "Fiches_MR/Fiche P1 - Panne portes.pdf",
+motsCles: ["p1", "panne", "portes"]
+},
+{
+code: "P2",
+titre: "Panne grave portes",
+chemin: "Fiches_MR/Fiche P2 - Panne grave portes.pdf",
+motsCles: ["p2", "panne", "grave", "portes"]
+},
+{
+code: "P3",
+titre: "Panne grave portes",
+chemin: "Fiches_MR/Fiche P3 - Panne grave portes.pdf",
+motsCles: ["p3", "panne", "grave", "portes"]
+},
+{
+code: "P4",
+titre: "Porte condamnée",
+chemin: "Fiches_MR/Fiche P4 - Porte condamnée.pdf",
+motsCles: ["p4", "porte", "condamnée"]
+},
+{
+code: "P5",
+titre: "Portes ouvertes",
+chemin: "Fiches_MR/Fiche P5 - Portes ouvertes.pdf",
+motsCles: ["p5", "portes", "ouvertes"]
+},
+{
+code: "P6",
+titre: "Forçage de l'ouverture des portes côté gauche",
+chemin: "Fiches_MR/Fiche P6 - Forçage de l'ouverture des portes côté gauche.pdf",
+motsCles: ["p6", "forçage", "ouverture", "portes", "gauche"]
+},
+{
+code: "P7",
+titre: "Forçage de l'ouverture des portes côté droit",
+chemin: "Fiches_MR/Fiche P7 - Forçage de l'ouverture des portes côté droit.pdf",
+motsCles: ["p7", "forçage", "ouverture", "portes", "droit"]
+},
+{
+code: "P8",
+titre: "Bouton ouverture directe des portes",
+chemin: "Fiches_MR/Fiche P8 - Bouton ouverture directe des portes.pdf",
+motsCles: ["p8", "bouton", "ouverture", "directe", "portes"]
+},
+{
+code: "PU1",
+titre: "Changement de cabine",
+chemin: "Fiches_MR/Fiche PU1 - Changement de cabine.pdf",
+motsCles: ["pu1", "changement", "cabine"]
+},
+{
+code: "PU2",
+titre: "Isolement veille automatique",
+chemin: "Fiches_MR/Fiche PU2 - Isolement veille automatique.pdf",
+motsCles: ["pu2", "isolement", "veille", "automatique"]
+},
+{
+code: "PU3",
+titre: "Panne veille automatique",
+chemin: "Fiches_MR/Fiche PU3 - Panne veille automatique.pdf",
+motsCles: ["pu3", "panne", "veille", "automatique"]
+},
+{
+code: "PU5",
+titre: "Panne sens de marche",
+chemin: "Fiches_MR/Fiche PU5 - Panne sens de marche.pdf",
+motsCles: ["pu5", "panne", "sens", "marche"]
+},
+{
+code: "PU6",
+titre: "Panne grave nanipulateur",
+chemin: "Fiches_MR/Fiche PU6 - Panne grave nanipulateur.pdf",
+motsCles: ["pu6", "panne", "grave", "nanipulateur"]
+},
+{
+code: "PU7",
+titre: "Secours manipulateur",
+chemin: "Fiches_MR/Fiche PU7 - Secours manipulateur.pdf",
+motsCles: ["pu7", "secours", "manipulateur"]
+},
+{
+code: "PU8",
+titre: "Panne relais cabine habilitée",
+chemin: "Fiches_MR/Fiche PU8 - Panne relais cabine habilitée.pdf",
+motsCles: ["pu8", "panne", "relais", "cabine", "habilitée"]
+},
+{
+code: "PU9",
+titre: "Clé en cabine opposée",
+chemin: "Fiches_MR/Fiche PU9 - Clé en cabine opposée.pdf",
+motsCles: ["pu9", "clé", "cabine", "opposée"]
+},
+{
+code: "PU10",
+titre: "Panne radio TETRA",
+chemin: "Fiches_MR/Fiche PU10 - Panne radio TETRA.pdf",
+motsCles: ["pu10", "panne", "radio", "tetra"]
+},
+{
+code: "PU11",
+titre: "Panne SIV",
+chemin: "Fiches_MR/Fiche PU11 - Panne SIV.pdf",
+motsCles: ["pu11", "panne", "siv"]
+},
+{
+code: "PU12",
+titre: "Dépréparation",
+chemin: "Fiches_MR/Fiche PU12 - Dépréparation.pdf",
+motsCles: ["pu12", "dépréparation"]
+},
+{
+code: "PU13",
+titre: "Avertissement acoustiques des portes",
+chemin: "Fiches_MR/Fiche PU13 - Avertissement acoustiques des portes.pdf",
+motsCles: ["pu13", "avertissement", "acoustiques", "portes"]
+},
+{
+code: "PU14",
+titre: "Combiné SIV décroché",
+chemin: "Fiches_MR/Fiche PU14 - Combiné SIV décroché.pdf",
+motsCles: ["pu14", "combiné", "siv", "décroché"]
+},
+{
+code: "PU44",
+titre: "Veille auto en test",
+chemin: "Fiches_MR/Fiche PU44 - Veille auto en test.pdf",
+motsCles: ["pu44", "veille", "auto", "test"]
+},
+{
+code: "SS1",
+titre: "Suspension en panne",
+chemin: "Fiches_MR/Fiche SS1 - Suspension en panne.pdf",
+motsCles: ["ss1", "suspension", "panne"]
+},
+{
+code: "SS2",
+titre: "Suspension isolée",
+chemin: "Fiches_MR/Fiche SS2 - Suspension isolée.pdf",
+motsCles: ["ss2", "suspension", "isolée"]
+},
+{
+code: "T1",
+titre: "Shunt boucle traction",
+chemin: "Fiches_MR/Fiche T1 - Shunt boucle traction.pdf",
+motsCles: ["t1", "shunt", "boucle", "traction"]
+},
+{
+code: "T2",
+titre: "Boucle traction ouverte",
+chemin: "Fiches_MR/Fiche T2 - Boucle traction ouverte.pdf",
+motsCles: ["t2", "boucle", "traction", "ouverte"]
+},
+{
+code: "T3",
+titre: "Panne grave traction",
+chemin: "Fiches_MR/Fiche T3 - Panne grave traction.pdf",
+motsCles: ["t3", "panne", "grave", "traction"]
+},
+{
+code: "T4",
+titre: "Panne grave traction",
+chemin: "Fiches_MR/Fiche T4 - Panne grave traction.pdf",
+motsCles: ["t4", "panne", "grave", "traction"]
+},
+{
+code: "T5",
+titre: "Panne grave traction",
+chemin: "Fiches_MR/Fiche T5 - Panne grave traction.pdf",
+motsCles: ["t5", "panne", "grave", "traction"]
+},
+{
+code: "T6",
+titre: "Panne grave traction",
+chemin: "Fiches_MR/Fiche T6 - Panne grave traction.pdf",
+motsCles: ["t6", "panne", "grave", "traction"]
+},
+{
+code: "T7",
+titre: "Panne TCU (série 01)",
+chemin: "Fiches_MR/Fiche T7 - Panne TCU (série 01).pdf",
+motsCles: ["t7", "panne", "tcu"]
+},
+{
+code: "T7",
+titre: "Panne TCU (série 02)",
+chemin: "Fiches_MR/Fiche T7 - Panne TCU (série 02).pdf",
+motsCles: ["t7", "panne", "tcu"]
+}];
+
+// ===== Données Mode Opératoire =====
+const systemes = [
+
+{
+code: "SYS100",
+titre: "Panne informatique d'un IHM ATS au PCC/PMA",
+chemin: "Système/SYS100 - Panne informatique d’un IHM ATS au PCC-PMA.pdf",
+motsCles: ["sys100", "panne", "ihm", "ats", "pcc", "pma"]
+},
+{
+code: "SYS101",
+titre: "Panne informatique ATS",
+chemin: "Système/SYS101 - Panne informatique ATS.pdf",
+motsCles: ["sys101", "panne", "informatique", "ats"]
+},
+{
+code: "SYS102",
+titre: "PAS - En défaut, perte d'un lien d'une unité A ou B du PAS",
+chemin: "Système/SYS102 - PAS - En défaut, perte d’un lien d’une unité A ou B du PAS.pdf",
+motsCles: ["sys102", "pas", "défaut", "perte", "lien", "unité"]
+},
+{
+code: "SYS103",
+titre: "PAS - Perte d'une unité A ou B",
+chemin: "Système/SYS103 - PAS - Perte d’une unité A ou B.pdf",
+motsCles: ["sys103", "pas", "perte", "unité"]
+},
+{
+code: "SYS104",
+titre: "PAS - Basculement à pieds d'œuvre d'un PAS",
+chemin: "Système/SYS104 - PAS - Basculement à pied d'oeuvre d'un PAS.pdf",
+motsCles: ["sys104", "pas", "basculement", "pieds", "œuvre"]
+},
+{
+code: "SYS105",
+titre: "PAS - Perte des deux unités A et B d'un PAS",
+chemin: "Système/SYS105 - PAS - Perte des deux unités A et B d'un PAS.pdf",
+motsCles: ["sys105", "pas", "perte", "deux", "unités"]
+},
+{
+code: "SYS106",
+titre: "PAS - Réinitialisation d'un PAS",
+chemin: "Système/SYS106 - PAS - Réinitialisation d’un PAS.pdf",
+motsCles: ["sys106", "pas", "réinitialisation"]
+},
+{
+code: "SYS107",
+titre: "PAS - Initialisation des LTV et ZauM d'un PAS",
+chemin: "Système/SYS107 - PAS - Initialisation des LTV et Zaum d'un PAS.pdf",
+motsCles: ["sys107", "pas", "initialisation", "ltv", "zaum"]
+},
+{
+code: "SYS108",
+titre: "PAS - Alarme UD1N",
+chemin: "Système/SYS108 - PAS - Alarme UD1N.pdf",
+motsCles: ["sys108", "pas", "alarme", "ud1n"]
+},
+{
+code: "SYS109",
+titre: "WCC - En défaut, perte d'un lien d'une unité A ou B du WCC",
+chemin: "Système/SYS109 - WCC - En défaut Perte d’un lien d'une unité A et B du WCC.pdf",
+motsCles: ["sys109", "wcc", "défaut", "perte", "lien", "unité"]
+},
+{
+code: "SYS110",
+titre: "WCC - Perte d'une unité A ou B",
+chemin: "Système/SYS110 - WCC - Perte d’une unité A ou B.pdf",
+motsCles: ["sys110", "wcc", "perte", "unité"]
+},
+{
+code: "SYS111",
+titre: "WCC - Perte des deux unités A et B d'un WCC",
+chemin: "Système/SYS111 - WCC - Perte des deux unités A et B d'un WCC.pdf",
+motsCles: ["sys111", "wcc", "perte", "deux", "unités"]
+},
+{
+code: "SYS112",
+titre: "WCC - Alarme UD1N",
+chemin: "Système/SYS112 - WCC - Alarme UD1N.pdf",
+motsCles: ["sys112", "wcc", "alarme", "ud1n"]
+},
+{
+code: "SYS113",
+titre: "IL - Perte d'une unité A ou B",
+chemin: "Système/SYS113 - IL - Perte d’une unité A ou B.pdf",
+motsCles: ["sys113", "il", "perte", "unité"]
+},
+{
+code: "SYS114",
+titre: "IL - Perte des deux unités A et B d'un IL",
+chemin: "Système/SYS114 - IL - Perte des deux unités A et B d'un IL.pdf",
+motsCles: ["sys114", "il", "perte", "deux", "unités"]
+},
+{
+code: "SYS115",
+titre: "Défaut mesure QVA",
+chemin: "Système/SYS115 - Défaut mesure QVA.pdf",
+motsCles: ["sys115", "défaut", "mesure", "qva"]
+},
+{
+code: "SYS116",
+titre: "SCADA - IHM PCC en défaut",
+chemin: "Système/SYS116 - SCADA - IHM PCC en défaut.pdf",
+motsCles: ["sys116", "scada", "ihm", "pcc", "défaut"]
+},
+{
+code: "SYS117",
+titre: "SCADA - IHM station/PMA en défaut",
+chemin: "Système/SYS117 - SCADA - IHM station-PMA en défaut.pdf",
+motsCles: ["sys117", "scada", "ihm", "pma", "station", "défaut"]
+},
+{
+code: "SYS118",
+titre: "Perte partielle du réseau TETRA",
+chemin: "Système/SYS118 - Perte partielle du réseau TETRA.pdf",
+motsCles: ["sys118", "perte", "partielle", "réseau", "tetra"]
+},
+{
+code: "SYS119",
+titre: "Perte totale du réseau TETRA",
+chemin: "Système/SYS119 - Perte totale du réseau TETRA.pdf",
+motsCles: ["sys119", "perte", "totale", "réseau", "tetra"]
+},
+{
+code: "SYS120",
+titre: "Perte partielle de la téléphonie (mode local)",
+chemin: "Système/SYS120 - Perte partielle de la téléphonie (mode local).pdf",
+motsCles: ["sys120", "perte", "partielle", "téléphonie", "local"]
+},
+{
+code: "SYS121",
+titre: "Perte du réseau Tétra et de la téléphonie filaire",
+chemin: "Système/SYS121 - Perte du réseau Tétra et de la téléphonie filaire.pdf",
+motsCles: ["sys121", "perte", "réseau", "tétra", "téléphonie", "filaire"]
+},
+{
+code: "SYS122",
+titre: "Perte du réseau Tétra, téléphonie filaire et téléphonie d'urgence",
+chemin: "Système/SYS122 - Perte du réseau Tétra, Téléphonie Filaire et Téléphonie d’urgence.pdf",
+motsCles: ["sys122", "perte", "réseau", "tétra", "téléphonie", "filaire", "urgence"]
+},
+{
+code: "SYS123",
+titre: "TCO en défaut",
+chemin: "Système/SYS123 - TCO en défaut.pdf",
+motsCles: ["sys123", "tco", "défaut"]
+}
+];
+
+const signalisations = [
+{
+code: "SIG100",
+titre: "Discordance d’aiguille: AdV décontrôlée",
+chemin: "Signalisation/SIG100 - Discordance d’aiguille - AdV décontrôlée.pdf",
+motsCles: ["sig100", "discordance", "aiguille", "adv", "décontrôlée"]
+},
+{
+code: "SIG101",
+titre: "Autorisation de franchissement d’un signal de manœuvre fermé",
+chemin: "Signalisation/SIG101 - Autorisation de franchissement D’un signal de manoeuvre fermé.pdf",
+motsCles: ["sig101", "autorisation", "franchissement", "signal", "manœuvre", "fermé"]
+},
+{
+code: "SIG102",
+titre: "Autorisation de franchissement d’un signal d’espacement fermé",
+chemin: "Signalisation/SIG102 - Autorisation de franchissement d’un signal d’espacement fermé.pdf",
+motsCles: ["sig102", "autorisation", "franchissement", "signal", "espacement", "fermé"]
+},
+{
+code: "SIG103",
+titre: "Franchissement intempestif d’un signal fermé (manœuvre ou espacement)",
+chemin: "Signalisation/SIG103 - Franchissement intempestif d’un signal fermé (manoeuvre ou espacement).pdf",
+motsCles: ["sig103", "franchissement", "intempestif", "signal", "fermé", "manœuvre", "espacement"]
+},
+{
+code: "SIG104",
+titre: "Dépassement en CMP/CML d’un signal ouvert",
+chemin: "Signalisation/SIG104 - Dépassement en CMPCML d’un Signal ouvert.pdf",
+motsCles: ["sig104", "dépassement", "cmp", "cml", "signal", "ouvert"]
+},
+{
+code: "SIG105",
+titre: "Non formation d’un itinéraire",
+chemin: "Signalisation/SIG105 - Non formation d’un itinéraire.pdf",
+motsCles: ["sig105", "non", "formation", "itinéraire"]
+},
+{
+code: "SIG106",
+titre: "Non formation d’itinéraire – L’itinéraire inverse existe",
+chemin: "Signalisation/SIG106 - Non formation d’itinéraire - L’itinéraire inverse existe.pdf",
+motsCles: ["sig106", "non", "formation", "itinéraire", "inverse", "existe"]
+},
+{
+code: "SIG107",
+titre: "Non formation d’itinéraire – L’itinéraire inverse n’existe pas",
+chemin: "Signalisation/SIG107 - Non formation d’itinéraire - L’itinéraire inverse n’existe pas.pdf",
+motsCles: ["sig107", "non", "formation", "itinéraire", "inverse", "n’existe", "pas"]
+},
+{
+code: "SIG108",
+titre: "CDV déclaré ARB : avec un train présent sur le CDV",
+chemin: "Signalisation/SIG108 - CDV déclaré ARB - Avec un train présent sur le CDV.pdf",
+motsCles: ["sig108", "cdv", "déclaré", "arb", "train", "présent"]
+},
+{
+code: "SIG109",
+titre: "CDV déclaré ARB : aucun train présent sur le CDV",
+chemin: "Signalisation/SIG109 - CDV déclaré ARB - Aucun train présent sur le CDV.pdf",
+motsCles: ["sig109", "cdv", "déclaré", "arb", "aucun", "train", "présent"]
+},
+{
+code: "SIG110",
+titre: "CDV déclaré NRB",
+chemin: "Signalisation/SIG110 - CDV déclaré NRB.pdf",
+motsCles: ["sig110", "cdv", "déclaré", "nrb"]
+},
+{
+code: "SIG111",
+titre: "Suspicion de rail cassé",
+chemin: "Signalisation/SIG111 - Suspicion de rail cassé.pdf",
+motsCles: ["sig111", "suspicion", "rail", "cassé"]
+},
+{
+code: "SIG112",
+titre: "Obstacle sur les voies",
+chemin: "Signalisation/SIG112 - Obstacle sur les voies.pdf",
+motsCles: ["sig112", "obstacle", "voies"]
+}
+];
+
+const energies = [
+{
+code: "ENE100",
+titre: "Mise hors tension différée",
+chemin: "Energie/ENE100 - Mise hors tension différée.pdf",
+motsCles: ["ene100", "mise", "hors", "tension", "différée"],
+type: "Énergie"
+},
+{
+code: "ENE101",
+titre: "Mise hors tension d’urgence",
+chemin: "Energie/ENE101 - Mise hors tension d’urgence.pdf",
+motsCles: ["ene101", "mise", "hors", "tension", "urgence"],
+type: "Énergie"
+},
+{
+code: "ENE102",
+titre: "Maintien de courant",
+chemin: "Energie/ENE102 - Maintien de courant.pdf",
+motsCles: ["ene102", "maintien", "courant"],
+type: "Énergie"
+},
+{
+code: "ENE103",
+titre: "Disjonction de cause Connue",
+chemin: "Energie/ENE103 - Disjonction de cause Connue.pdf",
+motsCles: ["ene103", "disjonction", "cause", "connue"],
+type: "Énergie"
+},
+{
+code: "ENE104",
+titre: "Disjonction de cause Inconnue",
+chemin: "Energie/ENE104 - Disjonction de cause Inconnue.pdf",
+motsCles: ["ene104", "disjonction", "cause", "inconnue"],
+type: "Énergie"
+},
+{
+code: "ENE105",
+titre: "PR indisponible",
+chemin: "Energie/ENE105 - PR indisponible.pdf",
+motsCles: ["ene105", "pr", "indisponible"],
+type: "Énergie"
+},
+{
+code: "ENE106",
+titre: "DUR indisponible Défaut IMAX ou UMZ",
+chemin: "Energie/ENE106 - DUR indisponible Défaut IMAX ou UMZ.pdf",
+motsCles: ["ene106", "dur", "indisponible", "defaut", "imax", "umz"],
+type: "Énergie"
+},
+{
+code: "ENE107",
+titre: "PR - DUR bloqué avec alarme défaut IMAX ou UMZ",
+chemin: "Energie/ENE107 - PR - DUR bloqué avec alarme défaut IMAX ou UMZ.pdf",
+motsCles: ["ene107", "pr", "dur", "bloqué", "alarme", "defaut", "imax", "umz"],
+type: "Énergie"
+},
+{
+code: "ENE108",
+titre: "PR - DUR bloqué avec Alarme défaut DDL",
+chemin: "Energie/ENE108 - PR - DUR bloqué avec Alarme défaut DDL.pdf",
+motsCles: ["ene108", "pr", "dur", "bloqué", "alarme", "ddl"],
+type: "Énergie"
+},
+{
+code: "ENE109",
+titre: "PR - DJPT bloqué avec alarme Défaut thermique ou I-MAX",
+chemin: "Energie/ENE109 - PR - DJPT bloqué avec alarme Défaut thermique ou I-MAX.pdf",
+motsCles: ["ene109", "pr", "djpt", "alarme", "thermique", "imax"],
+type: "Énergie"
+},
+{
+code: "ENE110",
+titre: "Alarme seuil manoeuvre ou défaut sur un DUR ou DJPT",
+chemin: "Energie/ENE110 - Alarme seuil manoeuvre Ou défaut sur un DUR ou DJPT.pdf",
+motsCles: ["ene110", "alarme", "seuil", "manoeuvre", "defaut", "dur", "djpt"],
+type: "Énergie"
+},
+{
+code: "ENE111",
+titre: "Défaut relais de Protection du transformateur",
+chemin: "Energie/ENE111 - Défaut relais de Protection Du transformateur.pdf",
+motsCles: ["ene111", "defaut", "relais", "protection", "transformateur"],
+type: "Énergie"
+},
+{
+code: "ENE112",
+titre: "PR - Alarme test DDL",
+chemin: "Energie/ENE112 - PR - Alarme test DDL.pdf",
+motsCles: ["ene112", "pr", "alarme", "test", "ddl"],
+type: "Énergie"
+},
+{
+code: "ENE113",
+titre: "PR - Mesure EDL mauvaise",
+chemin: "Energie/ENE113 - PR - Mesure EDL mauvaise.pdf",
+motsCles: ["ene113", "pr", "mesure", "edl", "mauvaise"],
+type: "Énergie"
+},
+{
+code: "ENE114",
+titre: "PR - Défaut central incendie ou report d’alarme",
+chemin: "Energie/ENE114 - PR - Défaut central incendie Ou report d’alarme.pdf",
+motsCles: ["ene114", "pr", "defaut", "incendie", "report", "alarme"],
+type: "Énergie"
+},
+{
+code: "ENE115",
+titre: "PR - Défaut ES automate ou chien de garde automate",
+chemin: "Energie/ENE115 - PR - Défaut ES automate Ou chien de Garde automate.pdf",
+motsCles: ["ene115", "pr", "defaut", "es", "automate", "chien", "garde"],
+type: "Énergie"
+},
+{
+code: "ENE116",
+titre: "PR - Alarme 1er seuil de température Transformateur ou redresseur du PR",
+chemin: "Energie/ENE116 - PR - Alarme 1er seuil de températur Transformateur ou redresseur du PR.pdf",
+motsCles: ["ene116", "pr", "alarme", "temperature", "transformateur", "redresseur"],
+type: "Énergie"
+},
+{
+code: "ENE117",
+titre: "PR - Alarme 1er seuil de température du transformateur alimentant le TA",
+chemin: "Energie/ENE117 - PR - Alarme 1er seuil de température Du transformateur alimentant le TA.pdf",
+motsCles: ["ene117", "pr", "alarme", "temperature", "transformateur", "ta"],
+type: "Énergie"
+},
+{
+code: "ENE118",
+titre: "PR - Alarme 2ème seuil de température du transformateur",
+chemin: "Energie/ENE118 - PR - Alarme 2eme seuil de Température du transformateur.pdf",
+motsCles: ["ene118", "pr", "alarme", "temperature", "transformateur", "2eme", "seuil"],
+type: "Énergie"
+},
+{
+code: "ENE119",
+titre: "PR - Alarme de synthèse position DJ 220V, 48V, 24V, 380V ou DJ HT",
+chemin: "Energie/ENE119 - PR - Alarme de synthèse Position DJ 220V, DJ 48VEt 24V, DJ 380V Ou DJ HT.pdf",
+motsCles: ["ene119", "pr", "alarme", "synthese", "position", "dj", "220v", "48v", "24v", "380v", "ht"],
+type: "Énergie"
+},
+{
+code: "ENE120",
+titre: "PR - Défaut 48V flottant",
+chemin: "Energie/ENE120 - PR - Défaut 48V flottant.pdf",
+motsCles: ["ene120", "pr", "alarme", "surcharge", "transformateur", "redresseur"],
+type: "Énergie"
+},
+{
+code: "ENE121",
+titre: "PR - Synthèse défaut relais température",
+chemin: "Energie/ENE121 - PR - Synthèse défaut relais température.pdf",
+motsCles: ["ene121", "pr", "defaut", "transformateur", "redresseur"],
+type: "Énergie"
+},
+{
+code: "ENE122",
+titre: "PR - Alarme avarie groupe + Alarme synthèse relais masse",
+chemin: "Energie/ENE122 - PR - Alarme avarie groupe + Alarme synthèse relais masse.pdf",
+motsCles: ["ene122", "pr", "defaut", "transformateur", "redresseur"],
+type: "Énergie"
+},
+{
+code: "ENE123",
+titre: "PR - Alarme avarie groupe + alarme 1er seuil de T° atteint Sur le TR Ou RED",
+chemin: "Energie/ENE123 - PR - Alarme avarie groupe + alarme 1er seuil de T° atteint Sur le TR Ou RED.pdf",
+motsCles: ["ene123", "pr", "defaut", "bt"],
+type: "Énergie"
+},
+{
+code: "ENE124",
+titre: "PR - UPS défaut de synthése",
+chemin: "Energie/ENE124 - PR - UPS défaut de synthése.pdf",
+motsCles: ["ene124", "pr", "defaut", "batteries", "autonomie"],
+type: "Énergie"
+},
+{
+code: "ENE125",
+titre: "PR - UPS fonctionnement sur batterie",
+chemin: "Energie/ENE125 - PR - UPS fonctionnement sur batterie.pdf",
+motsCles: ["ene125", "pr", "defaut", "batteries", "charge"],
+type: "Énergie"
+},
+{
+code: "ENE126",
+titre: "PR - Défaut de masse sur un IIT",
+chemin: "Energie/ENE126 - PR - Défaut de masse sur un IIT.pdf",
+motsCles: ["ene126", "pr", "defaut", "redresseur", "batteries"],
+type: "Énergie"
+},
+{
+code: "ENE127",
+titre: "CSPN - Défaut technique",
+chemin: "Energie/ENE127 - CSPN - Défaut technique.pdf",
+motsCles: ["ene127", "cspn", "defaut", "technique"],
+type: "Énergie"
+},
+{
+code: "ENE128",
+titre: "CSPN - Alarme défaut technique et URAIL>60V ou >200V",
+chemin: "Energie/ENE128 - CSPN - Alarme défaut technique et URAIL+60V ou +200V.pdf",
+motsCles: ["ene128", "cspn", "alarme", "defaut", "ural", "60v", "200v", "technique"],
+type: "Énergie"
+},
+{
+code: "ENE129",
+titre: "PEF - Défaut IMAX/IHOM sur DE1 ou DE2",
+chemin: "Energie/ENE129 - PEF - Défaut IMAX-IHOM Sur DE1 ou DE2.pdf",
+motsCles: ["ene129", "pef", "defaut", "imax", "ihom", "de1", "de2"],
+type: "Énergie"
+},
+{
+code: "ENE130",
+titre: "PEF - 1er seuil sur Transformateur HTBT",
+chemin: "Energie/ENE130 - PEF - 1er seuil sur Transformateur HTBT.pdf",
+motsCles: ["ene130", "pef", "transformateur", "htbt", "seuil", "1er"],
+type: "Énergie"
+},
+{
+code: "ENE131",
+titre: "PEF - 2eme seuil sur Transformateur HTBT",
+chemin: "Energie/ENE131 - PEF - 2eme seuil sur Transformateur HTBT.pdf",
+motsCles: ["ene131", "pef", "transformateur", "htbt", "seuil", "2eme"],
+type: "Énergie"
+},
+{
+code: "ENE132",
+titre: "PEF - TGBT alarme seuil des défauts ou manœuvres atteint sur DJ1Q1 ou DJ2Q1",
+chemin: "Energie/ENE132 - PEF - TGBT alarme seuil des défauts ou manoeuvres atteint sur DJ1Q1 ou DJ2Q1.pdf",
+motsCles: ["ene132", "pef", "tgbt", "alarme", "seuil", "dj1q1", "dj2q1"],
+type: "Énergie"
+},
+{
+code: "ENE133",
+titre: "PEF - TGBT alarme défaut Disjoncteur du DJ1Q1 ou DJ2Q1",
+chemin: "Energie/ENE133 - PEF - TGBT alarme défaut Disjoncteur du DJ1Q1 ou DJ2Q1.pdf",
+motsCles: ["ene133", "pef", "tgbt", "dj1q1", "dj2q1", "defaut", "disjoncteur"],
+type: "Énergie"
+},
+{
+code: "ENE134",
+titre: "PEF - TGBT alarme défaut Disjoncteur du DJ1Q1N ou DJ2Q1S",
+chemin: "Energie/ENE134 - PEF - TGBT alarme défaut Disjoncteur du DJ1Q1N ou DJ2Q1S.pdf",
+motsCles: ["ene134", "pef", "tgbt", "dj1q1n", "dj2q1s", "defaut", "disjoncteur"],
+type: "Énergie"
+},
+{
+code: "ENE135",
+titre: "PEF - Alarme TGBT délestage",
+chemin: "Energie/ENE135 - PEF - Alarme TGBT délestage.pdf",
+motsCles: ["ene135", "pef", "tgbt", "alarme", "delestage"],
+type: "Énergie"
+},
+{
+code: "ENE136",
+titre: "PEF - Synthèse DJBT ouvert",
+chemin: "Energie/ENE136 - PEF - Synthése DJBT ouvert.pdf",
+motsCles: ["ene136", "pef", "djbt", "synthese", "ouvert"],
+type: "Énergie"
+},
+{
+code: "ENE137",
+titre: "PEF - Tableau auxiliaire alarme Synthèse DJ 48V et 24V, DJ 380V, DJ HT ou DJ TGBT",
+chemin: "Energie/ENE137 - PEF - Tableau auxiliaire alarme Synthése DJ 48V et 24V, DJ 380V,DJ HT ou DJ TGBT.pdf",
+motsCles: ["ene137", "pef", "tableau", "auxiliaire", "synthese", "dj", "48v", "24v", "380v", "ht", "tgbt"],
+type: "Énergie"
+},
+{
+code: "ENE138",
+titre: "PEF - Tableau auxiliaire alarme Défaut ES, chien de garde automate",
+chemin: "Energie/ENE138 - PEF - Tableau auxiliaire alarme Défaut ES, chien de garde automate.pdf",
+motsCles: ["ene138", "pef", "tableau", "defaut", "es", "automate", "chien", "garde"],
+type: "Énergie"
+},
+{
+code: "ENE139",
+titre: "PEF - Tableau auxiliaire alarme Synthèse défaut relais température",
+chemin: "Energie/ENE139 - PEF - Tableau auxiliaire alarme Synthése défaut relais température.pdf",
+motsCles: ["ene139", "pef", "tableau", "synthese", "defaut", "relais", "temperature"],
+type: "Énergie"
+},
+{
+code: "ENE140",
+titre: "PEF 1 et PEF 2 d’une station Hors tension",
+chemin: "Energie/ENE140 - PEF 1 et PEF 2 d’une station Hors tension.pdf",
+motsCles: ["ene140", "pef", "station", "hors", "tension"],
+type: "Énergie"
+},
+{
+code: "ENE141",
+titre: "Equipement station - UPS - Défaut général",
+chemin: "Energie/ENE141 - Equipement station - UPS - Défaut général.pdf",
+motsCles: ["ene141", "equipement", "station", "ups", "defaut", "general"],
+type: "Énergie"
+},
+{
+code: "ENE142",
+titre: "Equipement Station - UPS - Marche sur batterie et défaut général",
+chemin: "Energie/ENE142 - Equipement Station - UPS - Marche sur batterie et défaut général.pdf",
+motsCles: ["ene142", "equipement", "station", "ups", "batterie", "defaut", "general", "marche"],
+type: "Énergie"
+},
+{
+code: "ENE143",
+titre: "Reconfiguration du réseau PEF sur défaut de l’artère 1 ou 2",
+chemin: "Energie/ENE143 - Reconfiguration du réseau PEF Sur Défaut de l’artère 1 ou 2.pdf",
+motsCles: ["ene143", "pef", "reconfiguration", "reseau", "defaut", "artere", "1", "2"],
+type: "Énergie"
+},
+{
+code: "ENE144",
+titre: "Non alimentation du réseau PEF (Artère 1 et 2)",
+chemin: "Energie/ENE144 - Non alimentation du réseau PEF (Artère 1 et 2).pdf",
+motsCles: ["ene144", "non", "alimentation", "reseau", "pef", "artere", "1", "2"],
+type: "Énergie"
+},
+{
+code: "ENE145",
+titre: "Recherche systématique de court Circuit aux installations (750v)",
+chemin: "Energie/ENE145 - Recherche systématique de court Circuit aux installations (750v).pdf",
+motsCles: ["ene145", "recherche", "systematique", "court", "circuit", "installations", "750v"],
+type: "Énergie"
+}
+];
+const regulations = [
+{
+code: "REG100",
+titre: "Paquet suspect - Accès au quai, sur le quai, dans un train",
+chemin: "Régulation/REG100 - Paquet suspect - Accès au quai, sur le quai, dans un train.pdf",
+motsCles: ["reg100", "désactivation", "automatique", "régulateur"]
+},
+{
+code: "REG101",
+titre: "Paquet suspect - Sortie de station, salle des billets",
+chemin: "Régulation/REG101 - Paquet suspect - Sortie de station, salle des billets.pdf",
+motsCles: ["reg101", "régulation", "non", "fonctionnelle"]
+},
+{
+code: "REG102",
+titre: "Intrusion sur les voies Information donnée par un agent",
+chemin: "Régulation/REG102 - Intrusion sur les voies Information donnée par un agent.pdf",
+motsCles: ["reg102", "incohérence", "heure", "régulateur"]
+},
+{
+code: "REG103",
+titre: "Accident grave de voyageur, déraillement, tamponnement",
+chemin: "Régulation/REG103 - Accident grave de voyageur, déraillement, tamponnement.pdf",
+motsCles: ["reg103", "incohérence", "intervalle", "régulateur"]
+},
+{
+code: "REG104",
+titre: "Couverture d’urgence",
+chemin: "Régulation/REG104 - Couverture d’urgence.pdf",
+motsCles: ["reg104", "heure", "régulateur", "arrêtée"]
+},
+{
+code: "REG105",
+titre: "Suppression de la couverture d’urgence",
+chemin: "Régulation/REG105 - Suppression de la couverture d’urgence.pdf",
+motsCles: ["reg105", "intervalle", "régulateur", "bloqué"]
+},
+{
+code: "REG106",
+titre: "Accostage d’un train",
+chemin: "Régulation/REG106 - Accostage d’un train.pdf",
+motsCles: ["reg106", "perte", "heure", "régulateur"]
+},
+{
+code: "REG107",
+titre: "Evacuation d’un train en Inter station",
+chemin: "Régulation/REG107 - Evacuation d’un train en Inter station.pdf",
+motsCles: ["reg107", "perte", "intervalle", "régulateur"]
+}];
+
+const PK = [
+{ min: 48536, max: 49146, fiche: "01", chemin: "Fiches_Des/Fiche 01.pdf", emplacement: "Ouvrage MAYA-Entrée Tunnel 01" },
+{ min: 48366, max: 48536, fiche: "02", chemin: "Fiches_Des/Fiche 02.pdf", emplacement: "Ouvrage MAYA-CMS" },
+{ min: 48253, max: 48366, fiche: "03 A", chemin: "Fiches_Des/Fiche 03 A.pdf", emplacement: "Station CMS - Quai" },
+{ min: 48253, max: 48366, fiche: "03 B", chemin: "Fiches_Des/Fiche 03 B.pdf", emplacement: "Station CMS - SDB" },
+{ min: 48056, max: 48253, fiche: "04", chemin: "Fiches_Des/Fiche 04.pdf", emplacement: "Ouvrage AMIEL- CMS" },
+{ min: 47628, max: 48056, fiche: "05", chemin: "Fiches_Des/Fiche 05.pdf", emplacement: "CAM-Ouvrage AMIEL" },
+{ min: 47515, max: 47628, fiche: "06 A", chemin: "Fiches_Des/Fiche 06 A.pdf", emplacement: "Station CAM - Quai" },
+{ min: 47515, max: 47628, fiche: "06 B", chemin: "Fiches_Des/Fiche 06 B.pdf", emplacement: "Station CAM - SDB" },
+{ min: 47022, max: 47515, fiche: "07", chemin: "Fiches_Des/Fiche 07.pdf", emplacement: "Ouvrage FERNANE-CAM" },
+{ min: 46499, max: 47022, fiche: "08", chemin: "Fiches_Des/Fiche 08.pdf", emplacement: "LFU-Ouvrage FERNANE" },
+{ min: 46386, max: 46499, fiche: "09 A", chemin: "Fiches_Des/Fiche 09 A.pdf", emplacement: "Station LFU - Quai" },
+{ min: 46386, max: 46499, fiche: "09 B", chemin: "Fiches_Des/Fiche 09 B.pdf", emplacement: "Station LFU - SDB" },
+{ min: 45728, max: 46386, fiche: "10", chemin: "Fiches_Des/Fiche 10.pdf", emplacement: "Ouvrage TAKJOURT-LFU" },
+{ min: 45361, max: 45728, fiche: "11", chemin: "Fiches_Des/Fiche 11.pdf", emplacement: "JES-Ouvrage TAKJOURT" },
+{ min: 45248, max: 45361, fiche: "12 A", chemin: "Fiches_Des/Fiche 12 A.pdf", emplacement: "Station JES - Quai" },
+{ min: 45248, max: 45361, fiche: "12 B", chemin: "Fiches_Des/Fiche 12 B.pdf", emplacement: "Station JES - SDB" },
+{ min: 44962, max: 45248, fiche: "13", chemin: "Fiches_Des/Fiche 13.pdf", emplacement: "Ouvrage HAMMA BN-JES" },
+{ min: 44529, max: 44962, fiche: "14", chemin: "Fiches_Des/Fiche 14.pdf", emplacement: "HAM-Ouvrage HAMMA BN" },
+{ min: 44416, max: 44529, fiche: "15 A", chemin: "Fiches_Des/Fiche 15 A.pdf", emplacement: "Station HAM - Quai" },
+{ min: 44416, max: 44529, fiche: "15 B", chemin: "Fiches_Des/Fiche 15 B.pdf", emplacement: "Station HAM - SDB" },
+{ min: 44163, max: 44416, fiche: "16", chemin: "Fiches_Des/Fiche 16.pdf", emplacement: "Ouvrage AYACHI-HAM" },
+{ min: 43894, max: 44163, fiche: "17", chemin: "Fiches_Des/Fiche 17.pdf", emplacement: "AID-Ouvrage AYACHI" },
+{ min: 43781, max: 43894, fiche: "18 A", chemin: "Fiches_Des/Fiche 18 A.pdf", emplacement: "Station AID - Quai" },
+{ min: 43781, max: 43894, fiche: "18 B", chemin: "Fiches_Des/Fiche 18 B.pdf", emplacement: "Station AID - SDB" },
+{ min: 43541, max: 43781, fiche: "19", chemin: "Fiches_Des/Fiche 19.pdf", emplacement: "Ouvrage UGTA-AID" },
+{ min: 43320, max: 43541, fiche: "20", chemin: "Fiches_Des/Fiche 20.pdf", emplacement: "MAI-Ouvrage UGTA" },
+{ min: 43207, max: 43320, fiche: "21 A", chemin: "Fiches_Des/Fiche 21 A.pdf", emplacement: "Station MAI - Quai" },
+{ min: 43207, max: 43320, fiche: "21 B", chemin: "Fiches_Des/Fiche 21 B.pdf", emplacement: "Station MAI - SDB" },
+{ min: 42705, max: 43207, fiche: "22", chemin: "Fiches_Des/Fiche 22.pdf", emplacement: "Ouvrage VINCENT-MAI" },
+{ min: 42421, max: 42705, fiche: "23", chemin: "Fiches_Des/Fiche 23.pdf", emplacement: "KBK-Ouvrage VINCENT" },
+{ min: 42308, max: 42421, fiche: "24 A", chemin: "Fiches_Des/Fiche 24 A.pdf", emplacement: "Station KBK - Quai" },
+{ min: 42308, max: 42421, fiche: "24 B", chemin: "Fiches_Des/Fiche 24 B.pdf", emplacement: "Station KBK - SDB" },
+{ min: 42017, max: 42308, fiche: "25", chemin: "Fiches_Des/Fiche 25.pdf", emplacement: "Ouvrage PICHON-KBK" },
+{ min: 41691, max: 42017, fiche: "26", chemin: "Fiches_Des/Fiche 26.pdf", emplacement: "TGP-Ouvrage PICHON" },
+{ min: 41578, max: 41691, fiche: "27 A", chemin: "Fiches_Des/Fiche 27 A.pdf", emplacement: "Station TGP - Quai" },
+{ min: 41578, max: 41691, fiche: "27 B", chemin: "Fiches_Des/Fiche 27 B.pdf", emplacement: "Station TGP - SDB" },
+{ min: 41410, max: 41578, fiche: "28", chemin: "Fiches_Des/Fiche 28.pdf", emplacement: "Ouvrage PASTEUR-TGP" },
+{ min: 41159, max: 41410, fiche: "29", chemin: "Fiches_Des/Fiche 29.pdf", emplacement: "SAB-Ouvrage PASTEUR" },
+{ min: 40786, max: 41159, fiche: "30", chemin: "Fiches_Des/Fiche 30.pdf", emplacement: "SAB-Ouvrage PASTEUR" },
+{ min: 40673, max: 40786, fiche: "31", chemin: "Fiches_Des/Fiche 31.pdf", emplacement: "Station SAB" },
+{ min: 40350, max: 40673, fiche: "32", chemin: "Fiches_Des/Fiche 32.pdf", emplacement: "PV OURIDA MEDDAD-SAB" },
+{ min: 39959, max: 40350, fiche: "33", chemin: "Fiches_Des/Fiche 33.pdf", emplacement: "SPM-PV OURIDA MEDDAD" },
+{ min: 39846, max: 39959, fiche: "34", chemin: "Fiches_Des/Fiche 34.pdf", emplacement: "Station SPM" },
+{ min: 39450, max: 39846, fiche: "35", chemin: "Fiches_Des/Fiche 35.pdf", emplacement: "Jardin de PRAGUES-SPM" },
+{ min: 50145, max: 50535, fiche: "B01", chemin: "Fiches_Des/Fiche B01.pdf", emplacement: "Entrée Tunnel 02-BDT" },
+{ min: 50535, max: 50648, fiche: "B02 A", chemin: "Fiches_Des/Fiche B02 A.pdf", emplacement: "Station BDT" },
+{ min: 50535, max: 50648, fiche: "B02 B", chemin: "Fiches_Des/Fiche B02 B.pdf", emplacement: "Station BDT" },
+{ min: 50648, max: 50691, fiche: "B03", chemin: "Fiches_Des/Fiche B03.pdf", emplacement: "BDT-PV EGERCO" },
+{ min: 50961, max: 51371, fiche: "B04", chemin: "Fiches_Des/Fiche B04.pdf", emplacement: "PV EGERCO-BDH" },
+{ min: 51371, max: 51484, fiche: "B05", chemin: "Fiches_Des/Fiche B05.pdf", emplacement: "Station BDH" },
+{ min: 51484, max: 51773, fiche: "B06", chemin: "Fiches_Des/Fiche B06.pdf", emplacement: "BDH-PV Cité d'Urgence" },
+{ min: 51773, max: 52061, fiche: "B07", chemin: "Fiches_Des/Fiche B07.pdf", emplacement: "BDH-PV Cité d'Urgence" },
+{ min: 52061, max: 52573, fiche: "B08", chemin: "Fiches_Des/Fiche B08.pdf", emplacement: "PV Cité d'Urgence-HAG" },
+{ min: 52573, max: 52689, fiche: "B09", chemin: "Fiches_Des/Fiche B09.pdf", emplacement: "Station HAG" },
+{ min: 52689, max: 53051, fiche: "B10", chemin: "Fiches_Des/Fiche B10.pdf", emplacement: "HAG-PV Oued el Harrach" },
+{ min: 53051, max: 53115, fiche: "B11", chemin: "Fiches_Des/Fiche B11.pdf", emplacement: "PV Oued el Harrach-HAC" },
+{ min: 53115, max: 53236, fiche: "B12", chemin: "Fiches_Des/Fiche B12.pdf", emplacement: "Station HAC" },
+{ min: 70855, max: 71150, fiche: "C01", chemin: "Fiches_Des/Fiche C01.pdf", emplacement: "Entrée Tunnel 03-PV Quatre chemins" },
+{ min: 71150, max: 71678, fiche: "C02", chemin: "Fiches_Des/Fiche C02.pdf", emplacement: "PV Quatre chemins-GDC" },
+{ min: 71678, max: 71801, fiche: "C03 A", chemin: "Fiches_Des/Fiche C03 A.pdf", emplacement: "Station GDC" },
+{ min: 71678, max: 71801, fiche: "C03 B", chemin: "Fiches_Des/Fiche C03 B.pdf", emplacement: "Station GDC" },
+{ min: 71678, max: 71801, fiche: "C03 C", chemin: "Fiches_Des/Fiche C03 C.pdf", emplacement: "Station GDC" },
+{ min: 71801, max: 72060, fiche: "C04", chemin: "Fiches_Des/Fiche C04.pdf", emplacement: "GDC-PV Stade Ain Nâadja" },
+{ min: 72060, max: 72506, fiche: "C05", chemin: "Fiches_Des/Fiche C05.pdf", emplacement: "PV Stade Ain Nâadja- AIN" },
+{ min: 72506, max: 72623, fiche: "C06", chemin: "Fiches_Des/Fiche C06.pdf", emplacement: "Station AIN" },
+{ min: 72623, max: 72910, fiche: "C07", chemin: "Fiches_Des/Fiche C07.pdf", emplacement: "AIN-PV Ain Nâadja" }
+];
+const fichesDE = [
+{code: "01",titre: "Fiche 01",chemin: "Fiches_Des/Fiche 01.pdf",type: "Fiches"},
+{code: "02",titre: "Fiche 02",chemin: "Fiches_Des/Fiche 02.pdf",type: "Fiches"},
+{code: "03A",titre: "Fiche 03 A",chemin: "Fiches_Des/Fiche 03 A.pdf",type: "Fiches"},
+{code: "03B",titre: "Fiche 03 B",chemin: "Fiches_Des/Fiche 03 B.pdf",type: "Fiches"},
+{code: "04",titre: "Fiche 04",chemin: "Fiches_Des/Fiche 04.pdf",type: "Fiches"},
+{code: "05",titre: "Fiche 05",chemin: "Fiches_Des/Fiche 05.pdf",type: "Fiches"},
+{code: "06A",titre: "Fiche 06 A",chemin: "Fiches_Des/Fiche 06 A.pdf",type: "Fiches"},
+{code: "06B",titre: "Fiche 06 B",chemin: "Fiches_Des/Fiche 06 B.pdf",type: "Fiches"},
+{code: "07",titre: "Fiche 07",chemin: "Fiches_Des/Fiche 07.pdf",type: "Fiches"},
+{code: "08",titre: "Fiche 08",chemin: "Fiches_Des/Fiche 08.pdf",type: "Fiches"},
+{code: "09A",titre: "Fiche 09 A",chemin: "Fiches_Des/Fiche 09 A.pdf",type: "Fiches"},
+{code: "09B",titre: "Fiche 09 B",chemin: "Fiches_Des/Fiche 09 B.pdf",type: "Fiches"},
+{code: "10",titre: "Fiche 10",chemin: "Fiches_Des/Fiche 10.pdf",type: "Fiches"},
+{code: "11",titre: "Fiche 11",chemin: "Fiches_Des/Fiche 11.pdf",type: "Fiches"},
+{code: "12A",titre: "Fiche 12 A",chemin: "Fiches_Des/Fiche 12 A.pdf",type: "Fiches"},
+{code: "12B",titre: "Fiche 12 B",chemin: "Fiches_Des/Fiche 12 B.pdf",type: "Fiches"},
+{code: "13",titre: "Fiche 13",chemin: "Fiches_Des/Fiche 13.pdf",type: "Fiches"},
+{code: "14",titre: "Fiche 14",chemin: "Fiches_Des/Fiche 14.pdf",type: "Fiches"},
+{code: "15A",titre: "Fiche 15 A",chemin: "Fiches_Des/Fiche 15 A.pdf",type: "Fiches"},
+{code: "15B",titre: "Fiche 15 B",chemin: "Fiches_Des/Fiche 15 B.pdf",type: "Fiches"},
+{code: "16",titre: "Fiche 16",chemin: "Fiches_Des/Fiche 16.pdf",type: "Fiches"},
+{code: "17",titre: "Fiche 17",chemin: "Fiches_Des/Fiche 17.pdf",type: "Fiches"},
+{code: "18A",titre: "Fiche 18 A",chemin: "Fiches_Des/Fiche 18 A.pdf",type: "Fiches"},
+{code: "18B",titre: "Fiche 18 B",chemin: "Fiches_Des/Fiche 18 B.pdf",type: "Fiches"},
+{code: "19",titre: "Fiche 19",chemin: "Fiches_Des/Fiche 19.pdf",type: "Fiches"},
+{code: "20",titre: "Fiche 20",chemin: "Fiches_Des/Fiche 20.pdf",type: "Fiches"},
+{code: "21A",titre: "Fiche 21 A",chemin: "Fiches_Des/Fiche 21 A.pdf",type: "Fiches"},
+{code: "21B",titre: "Fiche 21 B",chemin: "Fiches_Des/Fiche 21 B.pdf",type: "Fiches"},
+{code: "22",titre: "Fiche 22",chemin: "Fiches_Des/Fiche 22.pdf",type: "Fiches"},
+{code: "23",titre: "Fiche 23",chemin: "Fiches_Des/Fiche 23.pdf",type: "Fiches"},
+{code: "24A",titre: "Fiche 24 A",chemin: "Fiches_Des/Fiche 24 A.pdf",type: "Fiches"},
+{code: "24B",titre: "Fiche 24 B",chemin: "Fiches_Des/Fiche 24 B.pdf",type: "Fiches"},
+{code: "25",titre: "Fiche 25",chemin: "Fiches_Des/Fiche 25.pdf",type: "Fiches"},
+{code: "26",titre: "Fiche 26",chemin: "Fiches_Des/Fiche 26.pdf",type: "Fiches"},
+{code: "27A",titre: "Fiche 27 A",chemin: "Fiches_Des/Fiche 27 A.pdf",type: "Fiches"},
+{code: "27B",titre: "Fiche 27 B",chemin: "Fiches_Des/Fiche 27 B.pdf",type: "Fiches"},
+{code: "28",titre: "Fiche 28",chemin: "Fiches_Des/Fiche 28.pdf",type: "Fiches"},
+{code: "29",titre: "Fiche 29",chemin: "Fiches_Des/Fiche 29.pdf",type: "Fiches"},
+{code: "30",titre: "Fiche 30",chemin: "Fiches_Des/Fiche 30.pdf",type: "Fiches"},
+{code: "31",titre: "Fiche 31",chemin: "Fiches_Des/Fiche 31.pdf",type: "Fiches"},
+{code: "32",titre: "Fiche 32",chemin: "Fiches_Des/Fiche 32.pdf",type: "Fiches"},
+{code: "33",titre: "Fiche 33",chemin: "Fiches_Des/Fiche 33.pdf",type: "Fiches"},
+{code: "34",titre: "Fiche 34",chemin: "Fiches_Des/Fiche 34.pdf",type: "Fiches"},
+{code: "35",titre: "Fiche 35",chemin: "Fiches_Des/Fiche 35.pdf",type: "Fiches"},
+{code: "B01",titre: "Fiche B01",chemin: "Fiches_Des/Fiche B01.pdf",type: "Fiches"},
+{code: "B02A",titre: "Fiche B02 A",chemin: "Fiches_Des/Fiche B02 A.pdf",type: "Fiches"},
+{code: "B02B",titre: "Fiche B02 B",chemin: "Fiches_Des/Fiche B02 B.pdf",type: "Fiches"},
+{code: "B03",titre: "Fiche B03",chemin: "Fiches_Des/Fiche B03.pdf",type: "Fiches"},
+{code: "B04",titre: "Fiche B04",chemin: "Fiches_Des/Fiche B04.pdf",type: "Fiches"},
+{code: "B05",titre: "Fiche B05",chemin: "Fiches_Des/Fiche B05.pdf",type: "Fiches"},
+{code: "B06",titre: "Fiche B06",chemin: "Fiches_Des/Fiche B06.pdf",type: "Fiches"},
+{code: "B07",titre: "Fiche B07",chemin: "Fiches_Des/Fiche B07.pdf",type: "Fiches"},
+{code: "B08",titre: "Fiche B08",chemin: "Fiches_Des/Fiche B08.pdf",type: "Fiches"},
+{code: "B09",titre: "Fiche B09",chemin: "Fiches_Des/Fiche B09.pdf",type: "Fiches"},
+{code: "B10",titre: "Fiche B10",chemin: "Fiches_Des/Fiche B10.pdf",type: "Fiches"},
+{code: "B11",titre: "Fiche B11",chemin: "Fiches_Des/Fiche B11.pdf",type: "Fiches"},
+{code: "B12",titre: "Fiche B12",chemin: "Fiches_Des/Fiche B12.pdf",type: "Fiches"},
+{code: "C01",titre: "Fiche C01",chemin: "Fiches_Des/Fiche C01.pdf",type: "Fiches"},
+{code: "C02",titre: "Fiche C02",chemin: "Fiches_Des/Fiche C02.pdf",type: "Fiches"},
+{code: "C03A",titre: "Fiche C03 A",chemin: "Fiches_Des/Fiche C03 A.pdf",type: "Fiches"},
+{code: "C03B",titre: "Fiche C03 B",chemin: "Fiches_Des/Fiche C03 B.pdf",type: "Fiches"},
+{code: "C03C",titre: "Fiche C03 C",chemin: "Fiches_Des/Fiche C03 C.pdf",type: "Fiches"},
+{code: "C04",titre: "Fiche C04",chemin: "Fiches_Des/Fiche C04.pdf",type: "Fiches"},
+{code: "C05",titre: "Fiche C05",chemin: "Fiches_Des/Fiche C05.pdf",type: "Fiches"},
+{code: "C06",titre: "Fiche C06",chemin: "Fiches_Des/Fiche C06.pdf",type: "Fiches"},
+{code: "C07",titre: "Fiche C07",chemin: "Fiches_Des/Fiche C07.pdf",type: "Fiches"},
+];
+const scenariosDE = [
+{code: "01",titre: "Scénario 01 (EXT A)",chemin: "Scénarios/Scénario 01.pdf",type: "Scénarios"},
+{code: "02",titre: "Scénario 02 (EXT A)",chemin: "Scénarios/Scénario 02.pdf",type: "Scénarios"},
+{code: "03",titre: "Scénario 03 (EXT A)",chemin: "Scénarios/Scénario 03.pdf",type: "Scénarios"},
+{code: "04",titre: "Scénario 04 (EXT A)",chemin: "Scénarios/Scénario 04.pdf",type: "Scénarios"},
+{code: "05",titre: "Scénario 05 (EXT A)",chemin: "Scénarios/Scénario 05.pdf",type: "Scénarios"},
+{code: "06",titre: "Scénario 06 (EXT A)",chemin: "Scénarios/Scénario 06.pdf",type: "Scénarios"},
+{code: "07",titre: "Scénario 07 (EXT A)",chemin: "Scénarios/Scénario 07.pdf",type: "Scénarios"},
+{code: "08",titre: "Scénario 08 (TP)",chemin: "Scénarios/Scénario 08.pdf",type: "Scénarios"},
+{code: "09",titre: "Scénario 09 (TP)",chemin: "Scénarios/Scénario 09.pdf",type: "Scénarios"},
+{code: "10",titre: "Scénario 10 (TP)",chemin: "Scénarios/Scénario 10.pdf",type: "Scénarios"},
+{code: "11",titre: "Scénario 11 (TP)",chemin: "Scénarios/Scénario 11.pdf",type: "Scénarios"},
+{code: "12",titre: "Scénario 12 (TP)",chemin: "Scénarios/Scénario 12.pdf",type: "Scénarios"},
+{code: "13",titre: "Scénario 13 (TP)",chemin: "Scénarios/Scénario 13.pdf",type: "Scénarios"},
+{code: "14",titre: "Scénario 14 (TP)",chemin: "Scénarios/Scénario 14.pdf",type: "Scénarios"},
+{code: "15",titre: "Scénario 15 (TP)",chemin: "Scénarios/Scénario 15.pdf",type: "Scénarios"},
+{code: "16",titre: "Scénario 16 (TP)",chemin: "Scénarios/Scénario 16.pdf",type: "Scénarios"},
+{code: "17",titre: "Scénario 17 (TP)",chemin: "Scénarios/Scénario 17.pdf",type: "Scénarios"},
+{code: "18",titre: "Scénario 18 (TP)",chemin: "Scénarios/Scénario 18.pdf",type: "Scénarios"},
+{code: "19",titre: "Scénario 19 (TP)",chemin: "Scénarios/Scénario 19.pdf",type: "Scénarios"},
+{code: "20",titre: "Scénario 20 (TP)",chemin: "Scénarios/Scénario 20.pdf",type: "Scénarios"},
+{code: "21",titre: "Scénario 21 (TP)",chemin: "Scénarios/Scénario 21.pdf",type: "Scénarios"},
+{code: "22",titre: "Scénario 22 (TP)",chemin: "Scénarios/Scénario 22.pdf",type: "Scénarios"},
+{code: "23",titre: "Scénario 23 (TP)",chemin: "Scénarios/Scénario 23.pdf",type: "Scénarios"},
+{code: "24",titre: "Scénario 24 (TP)",chemin: "Scénarios/Scénario 24.pdf",type: "Scénarios"},
+{code: "25",titre: "Scénario 25 (TP)",chemin: "Scénarios/Scénario 25.pdf",type: "Scénarios"},
+{code: "26",titre: "Scénario 26 (TP)",chemin: "Scénarios/Scénario 26.pdf",type: "Scénarios"},
+{code: "27",titre: "Scénario 27 (TP)",chemin: "Scénarios/Scénario 27.pdf",type: "Scénarios"},
+{code: "28",titre: "Scénario 28 (TP)",chemin: "Scénarios/Scénario 28.pdf",type: "Scénarios"},
+{code: "29",titre: "Scénario 29 (TP)",chemin: "Scénarios/Scénario 29.pdf",type: "Scénarios"},
+{code: "30",titre: "Scénario 30 (TP)",chemin: "Scénarios/Scénario 30.pdf",type: "Scénarios"},
+{code: "31",titre: "Scénario 31 (TP)",chemin: "Scénarios/Scénario 31.pdf",type: "Scénarios"},
+{code: "32",titre: "Scénario 32 (TP)",chemin: "Scénarios/Scénario 32.pdf",type: "Scénarios"},
+{code: "33",titre: "Scénario 33 (TP)",chemin: "Scénarios/Scénario 33.pdf",type: "Scénarios"},
+{code: "34",titre: "Scénario 34 (TP)",chemin: "Scénarios/Scénario 34.pdf",type: "Scénarios"},
+{code: "35",titre: "Scénario 35 (TP)",chemin: "Scénarios/Scénario 35.pdf",type: "Scénarios"},
+{code: "36",titre: "Scénario 36 (TP)",chemin: "Scénarios/Scénario 36.pdf",type: "Scénarios"},
+{code: "37",titre: "Scénario 37 (TP)",chemin: "Scénarios/Scénario 37.pdf",type: "Scénarios"},
+{code: "38",titre: "Scénario 38 (TP)",chemin: "Scénarios/Scénario 38.pdf",type: "Scénarios"},
+{code: "39",titre: "Scénario 39 (TP)",chemin: "Scénarios/Scénario 39.pdf",type: "Scénarios"},
+{code: "40",titre: "Scénario 40 (TP)",chemin: "Scénarios/Scénario 40.pdf",type: "Scénarios"},
+{code: "41",titre: "Scénario 41 (TP)",chemin: "Scénarios/Scénario 41.pdf",type: "Scénarios"},
+{code: "42",titre: "Scénario 42 (TP)",chemin: "Scénarios/Scénario 42.pdf",type: "Scénarios"},
+{code: "43",titre: "Scénario 43 (TP)",chemin: "Scénarios/Scénario 43.pdf",type: "Scénarios"},
+{code: "44",titre: "Scénario 44 (TP)",chemin: "Scénarios/Scénario 44.pdf",type: "Scénarios"},
+{code: "B01",titre: "Scénario 01 (Ext B)",chemin: "Scénarios/Scénario B01.pdf",type: "Scénarios"},
+{code: "B02",titre: "Scénario 02 (Ext B)",chemin: "Scénarios/Scénario B02.pdf",type: "Scénarios"},
+{code: "B03",titre: "Scénario 03 (Ext B)",chemin: "Scénarios/Scénario B03.pdf",type: "Scénarios"},
+{code: "B04",titre: "Scénario 04 (Ext B)",chemin: "Scénarios/Scénario B04.pdf",type: "Scénarios"},
+{code: "B05",titre: "Scénario 05 (Ext B)",chemin: "Scénarios/Scénario B05.pdf",type: "Scénarios"},
+{code: "B06",titre: "Scénario 06 (Ext B)",chemin: "Scénarios/Scénario B06.pdf",type: "Scénarios"},
+{code: "B07",titre: "Scénario 07 (Ext B)",chemin: "Scénarios/Scénario B07.pdf",type: "Scénarios"},
+{code: "B08",titre: "Scénario 08 (Ext B)",chemin: "Scénarios/Scénario B08.pdf",type: "Scénarios"},
+{code: "B09",titre: "Scénario 09 (Ext B)",chemin: "Scénarios/Scénario B09.pdf",type: "Scénarios"},
+{code: "B10",titre: "Scénario 10 (Ext B)",chemin: "Scénarios/Scénario B10.pdf",type: "Scénarios"},
+{code: "B11",titre: "Scénario 11 (Ext B)",chemin: "Scénarios/Scénario B11.pdf",type: "Scénarios"},
+{code: "B12",titre: "Scénario 12 (Ext B)",chemin: "Scénarios/Scénario B12.pdf",type: "Scénarios"},
+{code: "C01",titre: "Scénario 01 (Ext C)",chemin: "Scénarios/Scénario C01.pdf",type: "Scénarios"},
+{code: "C02",titre: "Scénario 02 (Ext C)",chemin: "Scénarios/Scénario C02.pdf",type: "Scénarios"},
+{code: "C03",titre: "Scénario 03 (Ext C)",chemin: "Scénarios/Scénario C03.pdf",type: "Scénarios"},
+{code: "C04",titre: "Scénario 04 (Ext C)",chemin: "Scénarios/Scénario C04.pdf",type: "Scénarios"},
+{code: "C05",titre: "Scénario 05 (Ext C)",chemin: "Scénarios/Scénario C05.pdf",type: "Scénarios"},
+{code: "C06",titre: "Scénario 06 (Ext C)",chemin: "Scénarios/Scénario C06.pdf",type: "Scénarios"},
+{code: "C07",titre: "Scénario 07 (Ext C)",chemin: "Scénarios/Scénario C07.pdf",type: "Scénarios"},
+];
+
+const suggestionValidee = {};
+const champs = [
+{ input: "recherchePT", suggestions: "suggestionsPT" },
+];
+const champValide = new Map();
+champs.forEach(c => champValide.set(c.input, false));
+const champsMR = [
+{ input: "rechercheEvenementnement", suggestions: "suggestionsEvenementnement" },
+];
+const champsMO = [
+{ input: "rechercheSysteme", suggestions: "suggestionsSysteme" },
+{ input: "rechercheSignalisation", suggestions: "suggestionsSignalisation" },
+{ input: "rechercheEnergie", suggestions: "suggestionsEnergie" },
+{ input: "rechercheRegulation", suggestions: "suggestionsRegulation" }
+];
+
+const champsDE = [
+{ input: "recherchePK", suggestions: "suggestionsPK" },
+{ input: "rechercheFicheDE", suggestions: "suggestionsFicheDE" }
+];
+
+const DB_NAME = "PermisTravailDB";
+const STORE_NAME = "pdfFiles";
+let db;
+let pdfEnChargementPT = false;
+let pdfEnChargementMR = false;
+let pdfEnChargementMO = false;
+let pdfEnChargementDE = false;
+const indexMapPT = new Map();
+const indexMapMR = new Map();
+const indexMapMO = new Map();
+const indexMapDE = new Map();
+champsMR.forEach(c => indexMapMR.set(c.input, -1));
+champsMO.forEach(c => indexMapMO.set(c.input, -1));
+champsDE.forEach(c => indexMapDE.set(c.input, -1));
+
+// ================================================================ Fonctions Permis de Travail ============================================================
+
+// Initialisation de la base de données
+async function initDB() {
+return new Promise((resolve, reject) => {
+const request = indexedDB.open(DB_NAME, 1);
+request.onupgradeneeded = e => {
+db = e.target.result;
+if (!db.objectStoreNames.contains(STORE_NAME)) {
+db.createObjectStore(STORE_NAME, { keyPath: "name" });
+}};
+
+request.onsuccess = e => {
+db = e.target.result;
+resolve();
+};
+request.onerror = e => reject(e.target.error);
+});
+}
+
+// Permis de travail
+async function chargerFichiersDepuisDB() {
+return new Promise((resolve, reject) => {
+const transaction = db.transaction(STORE_NAME, "readonly");
+const store = transaction.objectStore(STORE_NAME);
+const request = store.getAll();
+
+request.onsuccess = e => {
+const fichiersValides = e.target.result.filter(item => {
+return item.data && item.name && item.lastModified;
+});
+
+pdfEnChargementPT = fichiersValides.map(item => {
+return {
+name: item.name,
+data: item.data,
+lastModified: item.lastModified
+};
+});
+
+if (fichiersValides.length !== e.target.result.length) {
+console.warn("Certains fichiers corrompus ont été filtrés");
+}
+resolve(pdfEnChargementPT);
+};
+
+request.onerror = e => reject(e.target.error);
+});
+}
+
+// === Anneau d'import façon "donut" (départ à 12h, cap arrondi) ===
+async function sauvegarderFichiersDansDB(files) {
+if (!db) await initDB();
+
+// --- Overlay / loader (créé une seule fois et réutilisé) ---
+let overlay = document.getElementById("importOverlay");
+let arc, label;
+const SIZE = 140;// vueBox
+const R = 55;// rayon de l'anneau
+const CIRC = 2 * Math.PI * R;
+
+if (!overlay) {
+overlay = document.createElement("div");
+overlay.id = "importOverlay";
+Object.assign(overlay.style, {
+position: "fixed",
+inset: "0",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+background: "rgba(0,0,0,0.75)",
+zIndex: 9999
+});
+
+const wrapper = document.createElement("div");
+Object.assign(wrapper.style, {
+position: "relative",
+width: "220px",
+height: "220px",
+display: "flex",
+alignItems: "center",
+justifyContent: "center"
+});
+
+const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svg.setAttribute("viewBox", `0 0 ${SIZE} ${SIZE}`);
+svg.style.width = "200px";
+svg.style.height = "200px";
+
+// Piste grise (reste)
+const track = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+track.setAttribute("cx", SIZE/2);
+track.setAttribute("cy", SIZE/2);
+track.setAttribute("r", R);
+track.setAttribute("fill", "none");
+track.setAttribute("stroke", "#3b3f45");// gris foncé comme sur l'image
+track.setAttribute("stroke-width", "18");
+track.setAttribute("transform", `rotate(-90 ${SIZE/2} ${SIZE/2})`);
+
+// Arc turquoise (progression)
+arc = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+arc.id = "progressArc";
+arc.setAttribute("cx", SIZE/2);
+arc.setAttribute("cy", SIZE/2);
+arc.setAttribute("r", R);
+arc.setAttribute("fill", "none");
+arc.setAttribute("stroke", "#49e6e8");// turquoise
+arc.setAttribute("stroke-width", "18");
+arc.setAttribute("stroke-linecap", "round");
+arc.setAttribute("stroke-dasharray", String(CIRC));
+arc.setAttribute("stroke-dashoffset", String(CIRC));
+arc.setAttribute("transform", `rotate(-90 ${SIZE/2} ${SIZE/2})`);
+
+svg.appendChild(track);
+svg.appendChild(arc);
+
+// % au centre
+label = document.createElement("div");
+label.id = "progressLabel";
+label.textContent = "0%";
+Object.assign(label.style, {
+position: "absolute",
+inset: "0",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+fontFamily: "system-ui,Calibri Light,Calibri Light",
+fontSize: "44px",
+color: "white",
+fontWeight: "600",
+letterSpacing: "1px"
+});
+
+const subtitle = document.createElement("div");
+subtitle.textContent = "Importation en cours…";
+Object.assign(subtitle.style, {
+position: "absolute",
+bottom: "-18px",// légèrement remonté
+left: "50%",
+transform: "translateX(-50%)",
+whiteSpace: "nowrap", // 🔹 empêche le retour à la ligne
+color: "white",
+fontFamily: "system-ui,Calibri Light,Calibri Light",
+fontSize: "22px", // un peu plus petit pour tenir sous le cercle
+opacity: "0.85",
+textAlign: "center"
+});
+
+
+wrapper.appendChild(svg);
+wrapper.appendChild(label);
+wrapper.appendChild(subtitle);
+overlay.appendChild(wrapper);
+document.body.appendChild(overlay);
+} else {
+arc = document.getElementById("progressArc");
+label = document.getElementById("progressLabel");
+}
+
+// Helpers d'affichage
+const show = () => { overlay.style.display = "flex"; };
+const hide = () => { overlay.style.display = "none"; };
+const setPercent = (p) => {
+if (p < 0) p = 0;
+if (p > 100) p = 100;
+label.textContent = `${p}%`;
+const offset = CIRC * (1 - p / 100);
+arc.setAttribute("stroke-dashoffset", String(offset));
+};
+// Laisse le navigateur peindre
+const nextFrame = () => new Promise(r => requestAnimationFrame(r));
+const shortPause = () => new Promise(r => setTimeout(r, 0));
+
+// Affiche le loader
+setPercent(0);
+show();
+await nextFrame();
+
+// 1) Vider la base
+await new Promise((resolve, reject) => {
+const tx = db.transaction(STORE_NAME, "readwrite");
+const store = tx.objectStore(STORE_NAME);
+const clearReq = store.clear();
+clearReq.onsuccess = resolve;
+clearReq.onerror = e => reject(e.target.error);
+});
+
+if (files.length === 0) {
+hide();
+return;
+}
+
+// 2) Import fichier par fichier (transaction par fichier -> UI réactive)
+for (let i = 0; i < files.length; i++) {
+const file = files[i];
+
+// Lecture buffer (progress fin par fichier = +1)
+const buffer = await file.arrayBuffer();
+
+await new Promise((resolve, reject) => {
+const tx = db.transaction(STORE_NAME, "readwrite");
+const store = tx.objectStore(STORE_NAME);
+const req = store.put({
+name: file.name,
+data: buffer,
+lastModified: file.lastModified
+});
+req.onsuccess = resolve;
+req.onerror= e => reject(e.target.error);
+});
+
+// Mise à jour visuelle
+const pct = Math.round(((i + 1) / files.length) * 100);
+setPercent(pct);
+// Laisse le temps au navigateur de peindre la progression
+await nextFrame();
+await shortPause();
+}
+
+hide();
+}
+
+function afficherPDFPT(source) {
+const loader = document.getElementById('pdfLoadingPT');
+const progressTextPT = document.getElementById('progressTextPT');
+const iframe = document.getElementById("pdfViewerPT");
+
+// Réinitialiser l'iframe en cas d'erreur précédente
+iframe.src = 'about:blank';
+
+// Cacher l'iframe pendant le chargement
+iframe.style.visibility = 'hidden';
+
+loader.style.display = 'block';
+progressTextPT.textContent = "Chargement...";
+
+let progress = 0;
+const interval = setInterval(() => {
+progressTextPT.textContent = `Chargement...`;
+if (progress >= 100) clearInterval(interval);
+}, 100);
+
+// Augmenter le timeout (30 secondes au lieu de 10)
+const timeout = setTimeout(() => {
+clearInterval(interval);
+loader.style.display = 'none';
+// Message moins alarmiste
+pdfLoadingPT.textContent = "Chargement...";
+
+// On ne ferme pas le loader immédiatement, on donne plus de temps
+}, 30000); // 30 secondes timeout
+
+iframe.onload = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+iframe.style.visibility = 'visible';
+
+setTimeout(() => {
+loader.style.display = 'none';
+}, 1000);
+};
+
+iframe.onerror = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextPT.textContent = "Échec du chargement";
+
+setTimeout(() => {
+loader.style.display = 'none';
+alert("Impossible de charger le document PDF. Le fichier peut être corrompu ou manquant.");
+}, 500);
+};
+
+// Ajout d'un try-catch pour les URLs invalides
+try {
+// Utiliser une URL object même pour les URLs externes
+iframe.src = source;
+} catch (e) {
+console.error("Erreur de chargement PDF:", e);
+clearTimeout(timeout);
+clearInterval(interval);
+loader.style.display = 'none';
+alert("Format de fichier PDF invalide.");
+}
+}
+
+document.getElementById("recherchePT").addEventListener("input", function() {
+const val = document.getElementById("recherchePT").value.trim().toLowerCase();
+const suggestionsPT = document.getElementById("suggestionsPT");
+suggestionsPT.innerHTML = "";
+if (!val) {
+return;
+}
+
+let resultats = [];
+
+pdfEnChargementPT.forEach(f => {
+const nom = f.name.toLowerCase();
+
+if (nom.includes(val)) {
+resultats.push(f);
+return; // pas besoin de tester plus loin
+}
+
+// Match le format MMYY-XX (ex: 0825-08)
+ const match = nom.match(/^(\d{4})\s*-\s*(\d{2,3})/);
+
+if (match) {
+const code = match[2]; // XX
+if (code === val) {
+resultats.push(f);
+}
+} else {
+// fallback classique si le nom ne suit pas le format
+if (nom.includes(val)) {
+resultats.push(f);
+}
+}
+});
+
+// Si la valeur recherchée est un nombre, chercher dans les plages
+if (/^\d+$/.test(val)) {
+pdfEnChargementPT.forEach(f => {
+const nom = f.name.toLowerCase();
+// 1) Plage avec tiret simple : "xx - yy"
+let matchTiret = nom.match(/(\d+)\s*-\s*(\d+)/);
+if (matchTiret) {
+const min = parseInt(matchTiret[1], 10);
+const max = parseInt(matchTiret[3], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}
+
+// 2) Plage avec "à" : "xx à yy"
+let matchAacc = nom.match(/(\d+)\s*à\s*(\d+)/);
+if (matchAacc) {
+const min = parseInt(matchAacc[1], 10);
+const max = parseInt(matchAacc[2], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}
+
+// 2) Plage avec "a" : "xx a yy"
+let matchA = nom.match(/(\d+)\s*a\s*(\d+)/);
+if (matchA) {
+const min = parseInt(matchA[1], 10);
+const max = parseInt(matchA[2], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}
+
+// 3) Plage au format avec double tiret : "xxxx-xx-xx"
+// Exemple: "0825-08-12"
+// On prend les 2 derniers nombres comme plage min-max
+let matchDoubleTiret = nom.match(/(\d+)-(\d+)-(\d+)/);
+if (matchDoubleTiret) {
+const min = parseInt(matchDoubleTiret[2], 10);
+const max = parseInt(matchDoubleTiret[3], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}
+
+// 4) Plage avec espace entre les deux nombres "xxxx-xx yy"
+// Exemple: "0825-08 12"
+// On cherche un nombre suivi d’un espace puis un autre nombre
+let matchEspace = nom.match(/(\d+)-(\d+)\s+(\d+)/);
+if (matchEspace) {
+const min = parseInt(matchEspace[2], 10);
+const max = parseInt(matchEspace[3], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}
+
+let matchPoint = nom.match(/(\d+)\s*\.\.\.\s*(\d+)/);
+if (matchPoint) {
+const min = parseInt(matchPoint[1], 10);
+const max = parseInt(matchPoint[2], 10);
+const num = parseInt(val, 10);
+if (num >= min && num <= max && !resultats.includes(f)) {
+resultats.push(f);
+}}});
+}
+
+// Afficher les suggestions
+if (resultats.length === 0) {
+suggestionsPT.innerHTML = "<div>Aucun résultat</div>";
+return;
+}
+
+resultats.forEach(fichier => {
+const div = document.createElement("div");
+div.textContent = fichier.name;
+div.onclick = async () => {
+try {
+// Recréer le File object depuis IndexedDB
+const url = URL.createObjectURL(
+new Blob([fichier.data], { type: 'application/pdf' })
+);
+validerSuggestionPT("recherchePT", "suggestionsPT", fichier.name, url);
+} catch (err) {
+console.error("Erreur d'ouverture du PDF:", err);
+alert("Impossible d'ouvrir le fichier PDF. Il peut avoir été corrompu ou supprimé.");
+}
+};
+
+suggestionsPT.appendChild(div);
+
+});
+});
+
+function validerSuggestionPT(champInputId, champSuggestionsId, texte, cheminPDF) {
+afficherPDFPT(cheminPDF);
+document.getElementById(champInputId).value = texte;
+document.getElementById(champSuggestionsId).innerHTML = "";
+champValide.set(champInputId, true);
+}
+
+// -----------------------
+// Focus sur une barre : reset autres champs + visionneur
+// -----------------------
+champs.forEach(({ input }) => {
+const inputEl = document.getElementById(input);
+inputEl.addEventListener("focus", () => {
+resetVisionneurPT();
+resetAutresChampsPT(input);
+});
+});
+
+// -----------------------
+// Modification d'un champ validé → reset champ + visionneur
+// -----------------------
+champs.forEach(({ input }) => {
+const inputEl = document.getElementById(input);
+inputEl.addEventListener("input", () => {
+if (champValide.get(input)) {
+champValide.set(input, false); // on annule l'état "validé"
+resetVisionneurPT(); // on vide le viewer
+}});
+});
+
+// -----------------------
+// Navigation clavier dans les suggestions OU entre champs
+// -----------------------
+champs.forEach(({ input, suggestions }) => {
+const inputEl = document.getElementById(input);
+
+inputEl.addEventListener("keydown", (e) => {
+const sugEls = document.querySelectorAll(`#${suggestions} div`);
+let indexSelection = indexMapPT.get(input) ?? -1;
+
+// Navigation dans les suggestions
+if (sugEls.length > 0) {
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+} else if (sugEls.length === 1) {
+// Si une seule suggestion mais pas de sélection, cliquer sur la première
+sugEls[0].click();
+}}
+indexMapPT.set(input, indexSelection);
+
+mettreEnSurbrillancePT(sugEls, indexSelection);
+}
+// Navigation entre champs si pas de suggestions
+else {
+const inputs = Array.from(document.querySelectorAll("input[type='text']"));
+const currentIndex = inputs.indexOf(inputEl);
+
+if (e.key === "ArrowDown") {
+e.preventDefault();
+inputs[(currentIndex + 1) % inputs.length].focus();
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+inputs[(currentIndex - 1 + inputs.length) % inputs.length].focus();
+} else if (e.key === "Enter") {
+// Gestion de la touche Entrée quand il n'y a pas de suggestions visibles
+gererTouchePT(e);
+} else if (e.key === "Escape") {
+gererTouchePT(e);
+}}});
+});
+
+// Fonction appelée par le bouton
+function miseAJourBase() {
+reinitialiserRecherchePT ();
+const input = document.getElementById("inputDossier");
+input.value = ""; // 🔁 Réinitialise le champ pour forcer le déclenchement
+input.click();
+}
+
+// Écouteur unique pour le changement de dossier
+document.getElementById("inputDossier").addEventListener("change", async (e) => {
+const files = Array.from(e.target.files).filter(f =>
+f.name.toLowerCase().endsWith(".pdf") &&
+f.size > 0 &&
+f.type === 'application/pdf'
+);
+
+if (files.length === 0) {
+afficherNotificationPT({
+type: "error",
+message: "⚠️ Aucun fichier PDF valide trouvé.",
+duration: 5000
+});
+return;
+}
+
+try {
+const testFile = files[0];
+const testArrayBuffer = await testFile.arrayBuffer();
+
+if (testArrayBuffer.byteLength === 0) {
+throw new Error("Fichier PDF vide détecté");
+}
+
+await sauvegarderFichiersDansDB(files);
+pdfEnChargementPT = files;
+
+afficherNotificationPT({
+type: "success",
+message: `✅ Base mise à jour avec ${files.length} fichiers PDF valides.`,
+duration: 5000
+});
+
+reinitialiserRecherchePT ();
+} catch (err) {
+console.error("Erreur de traitement PDF:", err);
+afficherNotificationPT({
+type: "error",
+message: `❌ Erreur lors de l'import : ${err.message}`,
+duration: 6000
+});
+}
+});
+
+// Initialisation au chargement
+window.onload = async () => {
+try {
+await initDB();
+await chargerFichiersDepuisDB();
+console.log(`${pdfEnChargementPT.length} fichiers PDF chargés depuis IndexedDB.`);
+} catch (err) {
+console.error("Erreur d'initialisation IndexedDB :", err);
+}};
+
+function afficherNotificationPT({ type = "info", message, duration = 3000 }) {
+const notif = document.createElement("div");
+notif.className = `notif ${type}`;
+notif.textContent = message;
+
+document.body.appendChild(notif);
+
+setTimeout(() => {
+notif.classList.add("fade-out");
+setTimeout(() => notif.remove(), 500);
+}, duration);
+}
+
+// À chaque focus sur une barre de recherche : on réinitialise le visionneur + les autres champs
+champs.forEach(({ input }) => {
+const inputEl = document.getElementById(input);
+inputEl.addEventListener("focus", () => {
+resetVisionneurPT();// <-- vide le viewer
+resetAutresChampsPT(input); // <-- vide les autres champs + suggestions
+});
+});
+
+// Initialisation au chargement
+window.addEventListener('DOMContentLoaded', async () => {
+try {
+await initDB();
+await chargerFichiersDepuisDB();
+console.log(`${pdfEnChargementPT.length} fichiers PDF chargés depuis IndexedDB.`);
+} catch (err) {
+console.error("Erreur d'initialisation :", err);
+}});
+
+
+// ============================================================== Fonctions Matériels Roulants ======================================================================
+
+function afficherSuggestionsMO(idChamp, idSuggestions, resultats) {
+const suggestionsEl = document.getElementById(idSuggestions);
+Array.from(suggestionsEl.children).forEach(child => {
+if (child._autoScroll) clearInterval(child._autoScroll);
+});
+
+suggestionsEl.innerHTML = "";
+
+resultats.forEach(item => {
+const texte = `${item.code} — ${item.titre}`;
+const div = document.createElement("div");
+div.textContent = texte;
+
+div.onclick = () => {
+setTimeout(() => {
+choisirSuggestionMO(idChamp, idSuggestions, texte, item.chemin);
+},
+0);
+};
+
+suggestionsEl.appendChild(div);
+
+setTimeout(() => {
+if (div.scrollWidth > div.clientWidth) {
+let pos = 0;
+let pause = false;
+
+function loopScrollMO() {
+if (!pause) {
+pos += 1;
+div.scrollLeft = pos;
+if (pos >= div.scrollWidth - div.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+div.scrollLeft = 0;
+setTimeout(() => {
+pause = false;
+},
+2000);
+},
+2000);
+}}}
+
+setTimeout(() => {
+pause = false;
+}, 2000);
+div._autoScroll = setInterval(loopScrollMO, 50);
+}},
+200);
+});
+indexMapMO.set(idChamp, -1);
+}
+
+function afficherPDFMR(source) {
+const loader = document.getElementById('pdfLoadingMR');
+const progressTextMR = document.getElementById('progressTextMRPDF');
+const iframeMR = document.getElementById("pdfViewerMR");
+
+iframeMR.src = 'about:blank';
+loader.style.display = 'block';
+progressTextMR.textContent = "Chargement...";
+
+let progress = 0;
+const interval = setInterval(() => {
+progress += 10;
+if (progress >= 100) clearInterval(interval);
+},
+100);
+
+const timeout = setTimeout(() => {
+clearInterval(interval);
+loader.style.display = 'none';
+},
+10000);
+
+iframeMR.onload = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextMR.textContent = "Chargement...";
+setTimeout(() => loader.style.display = 'none', 500);
+};
+
+iframeMR.onerror = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextMR.textContent = "Échec du chargement";
+setTimeout(() => {
+loader.style.display = 'none';
+alert("Impossible de charger le document PDF. Le fichier peut être corrompu ou manquant.");
+},
+500);
+};
+
+try {
+iframeMR.src = source;
+} catch (e) {
+console.error("Erreur de chargement PDF:", e);
+clearTimeout(timeout);
+clearInterval(interval);
+loader.style.display = 'none';
+alert("Format de fichier PDF invalide.");
+}}
+
+// ====================================================================== Fonctions Mode Oératoire ====================================================================
+
+function afficherSuggestionsMO(idChamp, idSuggestions, resultats) {
+const suggestionsEl = document.getElementById(idSuggestions);
+Array.from(suggestionsEl.children).forEach(child => {
+if (child._autoScroll) clearInterval(child._autoScroll);
+});
+
+suggestionsEl.innerHTML = "";
+
+resultats.forEach(item => {
+const texte = `${item.code} — ${item.titre}`;
+const div = document.createElement("div");
+div.textContent = texte;
+
+div.onclick = () => {
+setTimeout(() => {
+choisirSuggestionMO(idChamp, idSuggestions, texte, item.chemin);
+},
+0);
+};
+
+suggestionsEl.appendChild(div);
+
+setTimeout(() => {
+if (div.scrollWidth > div.clientWidth) {
+let pos = 0;
+let pause = false;
+
+function loopScrollMO() {
+if (!pause) {
+pos += 1;
+div.scrollLeft = pos;
+if (pos >= div.scrollWidth - div.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+div.scrollLeft = 0;
+setTimeout(() => {
+pause = false;
+},
+2000);
+},
+2000);
+}}}
+
+setTimeout(() => {
+pause = false;
+}, 2000);
+div._autoScroll = setInterval(loopScrollMO, 50);
+}},
+200);
+});
+indexMapMO.set(idChamp, -1);
+}
+function afficherPDFMO(source) {
+const loader = document.getElementById('pdfLoadingMO');
+const progressTextMO = document.getElementById('progressTextMOPDF');
+const iframeMO = document.getElementById("pdfViewerMO");
+
+iframeMO.src = 'about:blank';
+loader.style.display = 'block';
+progressTextMO.textContent = "Chargement...";
+
+let progress = 0;
+const interval = setInterval(() => {
+progress += 10;
+if (progress >= 100) clearInterval(interval);
+},
+100);
+
+const timeout = setTimeout(() => {
+clearInterval(interval);
+loader.style.display = 'none';
+},
+10000);
+
+iframeMO.onload = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextMO.textContent = "Chargement...";
+setTimeout(() => loader.style.display = 'none', 500);
+};
+
+iframeMO.onerror = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextMO.textContent = "Échec du chargement";
+setTimeout(() => {
+loader.style.display = 'none';
+alert("Impossible de charger le document PDF. Le fichier peut être corrompu ou manquant.");
+},
+500);
+};
+
+try {
+iframeMO.src = source;
+} catch (e) {
+console.error("Erreur de chargement PDF:", e);
+clearTimeout(timeout);
+clearInterval(interval);
+loader.style.display = 'none';
+alert("Format de fichier PDF invalide.");
+}}
+
+function setupRechercheMO(inputId, suggestionsId, data) {
+const inputEl = document.getElementById(inputId);
+const suggestionsEl = document.getElementById(suggestionsId);
+
+inputEl.addEventListener("input", () => {
+const val = inputEl.value.toLowerCase().trim();
+suggestionsEl.innerHTML = "";
+if (!val) return;
+const resultats = data.filter(item =>
+item.titre.toLowerCase().includes(val) ||
+item.code.toLowerCase().includes(val) ||
+(item.motsCles && item.motsCles.some(m => m.includes(val)))
+);
+afficherSuggestionsMO(inputId, suggestionsId, resultats);
+});
+
+// Ajout du gestionnaire pour la touche Entrée
+inputEl.addEventListener("keydown", (e) => {
+gererToucheMO(e, inputId, suggestionsId, data);
+
+const sugEls = suggestionsEl.querySelectorAll("div");
+let indexSelection = indexMapMO.get(inputId);
+const inputsMO = champsMO.map(c => document.getElementById(c.input));
+const currentIndex = inputsMO.indexOf(inputEl);
+
+if (sugEls.length > 0) {
+// Navigation dans les suggestions
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+}}
+indexMapMO.set(inputId, indexSelection);
+mettreEnSurbrillanceMO(sugEls, indexSelection);
+} else {
+// Navigation entre champsMO
+if (e.key === "ArrowDown") {
+resetVisionneurMO(); 
+reinitialiserChampMO(inputId, suggestionsId);
+e.preventDefault();
+inputsMO[(currentIndex + 1) % inputsMO.length].focus();
+} else if (e.key === "ArrowUp") {
+resetVisionneurMO(); 
+reinitialiserChampMO(inputId, suggestionsId);
+e.preventDefault();
+inputsMO[(currentIndex - 1 + inputsMO.length) % inputsMO.length].focus();
+}}});
+
+inputEl.addEventListener("pointerdown", () => {
+if (document.activeElement !== inputEl) {
+// 🔄 Réinitialisation globale uniquement si le champ n'a pas déjà le focus
+champsMO.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexMapMO.set(input, -1);
+});
+const viewer = document.getElementById("pdfViewerMO");
+if (viewer) viewer.src = "about:blank";
+}});
+}
+
+// ======================================================================== Fonctions Désenfumage ==================================================================
+
+
+function afficherPDFDE(source) {
+const loader = document.getElementById('pdfLoadingDE');
+const progressTextDE = document.getElementById('progressTextDEPDF');
+const iframe = document.getElementById("pdfViewerDE");
+iframe.src = 'about:blank';
+loader.style.display = 'block';
+progressTextDE.textContent = "Chargement...";
+
+let progress = 0;
+const interval = setInterval(() => {
+progress += 10;
+if (progress >= 100) clearInterval(interval);
+}, 100);
+
+const timeout = setTimeout(() => {
+clearInterval(interval);
+loader.style.display = 'none';
+}, 10000);
+
+iframe.onload = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextDE.textContent = "Chargement...";
+setTimeout(() => loader.style.display = 'none', 500);
+};
+
+iframe.onerror = () => {
+clearTimeout(timeout);
+clearInterval(interval);
+progressTextDE.textContent = "Échec du chargement";
+setTimeout(() => {
+loader.style.display = 'none';
+alert("Impossible de charger le document PDF.");
+}, 500);
+};
+
+try {
+iframe.src = source;
+} catch (e) {
+console.error("Erreur de chargement PDF:", e);
+clearTimeout(timeout);
+clearInterval(interval);
+loader.style.display = 'none';
+alert("Format de fichier PDF invalide.");
+}}
+
+function setupRechercheGenerique({ inputId, suggestionsId, data }) {
+const inputEl = document.getElementById(inputId);
+const suggestionsEl = document.getElementById(suggestionsId);
+indexMapDE.set(inputId, -1);
+
+inputEl.addEventListener("input", () => {
+const val = inputEl.value.trim();
+suggestionsEl.innerHTML = "";
+if (!val) return;
+
+const matches = data.filter(item =>
+item.titre?.toLowerCase().includes(val.toLowerCase())
+);
+
+if (matches.length === 0) {
+const div = document.createElement("div");
+div.textContent = `Aucun résultat pour "${val}"`;
+div.classList.add("suggestion-vide");
+suggestionsEl.appendChild(div);
+return;
+}
+
+affichersuggestionsFicheDE(inputId, suggestionsId, matches);
+});
+
+inputEl.addEventListener("keydown", (e) => {
+// Gestion de la touche Entrée - même si les suggestions ne sont pas visibles
+if (e.key === "Enter") {
+e.preventDefault();
+const val = inputEl.value.trim();
+
+if (!val) return;
+
+// Rechercher dans les données
+const matches = data.filter(item =>
+item.titre?.toLowerCase().includes(val.toLowerCase())
+);
+
+// Si un seul résultat, le sélectionner automatiquement
+if (matches.length === 1) {
+const cheminNormalise = encodeURI(matches[0].chemin.replace(/\\/g, "/"));
+afficherPDFDE(cheminNormalise);
+inputEl.value = matches[0].titre;
+suggestionsEl.innerHTML = "";
+return;
+}
+}
+
+const sugEls = suggestionsEl.querySelectorAll("div");
+let indexSelection = indexMapDE.get(inputId);
+const inputs = champsDE.map(c => document.getElementById(c.input));
+const currentIndex = inputs.indexOf(inputEl);
+
+if (sugEls.length > 0) {
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+}
+}
+indexMapDE.set(inputId, indexSelection);
+mettreEnSurbrillanceDE(sugEls, indexSelection);
+} else {
+if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+// 🔄 Réinitialisation globale
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexMapDE.set(input, -1);
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+
+e.preventDefault();
+const nextIndex = e.key === "ArrowDown"
+? (currentIndex + 1) % inputs.length
+: (currentIndex - 1 + inputs.length) % inputs.length;
+inputs[nextIndex].focus();
+}
+}
+});
+
+inputEl.addEventListener("pointerdown", () => {
+if (document.activeElement !== inputEl) {
+// 🔄 Réinitialisation globale uniquement si le champ n'a pas déjà le focus
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexMapDE.set(input, -1);
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+}});
+}
+
+function setupRechercheMixte({ inputId, suggestionsId, data }) {
+const inputEl = document.getElementById(inputId);
+const suggestionsEl = document.getElementById(suggestionsId);
+indexMapDE.set(inputId, -1);
+
+inputEl.addEventListener("input", () => {
+const val = inputEl.value.trim();
+suggestionsEl.innerHTML = "";
+if (!val) return;
+
+const valeurNum = parseFloat(val.replace(/\s/g, ""));
+const estPK = !isNaN(valeurNum);
+
+const matches = estPK
+? data.filter(item => valeurNum >= item.min && valeurNum <= item.max)
+: data.filter(item => item.emplacement.toLowerCase().includes(val.toLowerCase()));
+
+if (matches.length === 0) {
+const div = document.createElement("div");
+div.textContent = `Aucun résultat pour "${val}"`;
+div.classList.add("suggestion-vide");
+suggestionsEl.appendChild(div);
+return;
+}
+
+suggestionsEl.innerHTML = "";
+matches.forEach(match => {
+const texte = `Fiche ${match.fiche} (${match.emplacement}) [PK ${match.min}–${match.max}]`;
+const div = document.createElement("div");
+div.textContent = texte;
+div.classList.add("suggestion");
+
+div.onclick = () => {
+choisirSuggestionDE(inputId, suggestionsId, texte, match.chemin);
+};
+
+suggestionsEl.appendChild(div);
+});
+});
+
+inputEl.addEventListener("keydown", (e) => {
+// Gestion de la touche Entrée - même si les suggestions ne sont pas visibles
+if (e.key === "Enter") {
+e.preventDefault();
+const val = inputEl.value.trim();
+
+if (!val) return;
+
+const valeurNum = parseFloat(val.replace(/\s/g, ""));
+const estPK = !isNaN(valeurNum);
+
+// Rechercher dans les données
+const matches = estPK
+? data.filter(item => valeurNum >= item.min && valeurNum <= item.max)
+: data.filter(item => item.emplacement.toLowerCase().includes(val.toLowerCase()));
+
+// Si un seul résultat, le sélectionner automatiquement
+if (matches.length === 1) {
+const texte = `Fiche ${matches[0].fiche} (${matches[0].emplacement}) [PK ${matches[0].min}–${matches[0].max}]`;
+const cheminNormalise = encodeURI(matches[0].chemin.replace(/\\/g, "/"));
+afficherPDFDE(cheminNormalise);
+inputEl.value = texte;
+suggestionsEl.innerHTML = "";
+return;
+}
+}
+
+const sugEls = suggestionsEl.querySelectorAll("div");
+let indexSelection = indexMapDE.get(inputId);
+const inputs = champsDE.map(c => document.getElementById(c.input));
+const currentIndex = inputs.indexOf(inputEl);
+
+if (sugEls.length > 0) {
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+}
+}
+indexMapDE.set(inputId, indexSelection);
+mettreEnSurbrillanceDE(sugEls, indexSelection);
+} else {
+if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+// 🔄 Réinitialisation globale
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexMapDE.set(input, -1);
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+
+e.preventDefault();
+const nextIndex = e.key === "ArrowDown"
+? (currentIndex + 1) % inputs.length
+: (currentIndex - 1 + inputs.length) % inputs.length;
+inputs[nextIndex].focus();
+}}});
+
+inputEl.addEventListener("pointerdown", () => {
+if (document.activeElement !== inputEl) {
+// 🔄 Réinitialisation globale uniquement si le champ n'a pas déjà le focus
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexMapDE.set(input, -1);
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+}});
+
+inputEl.addEventListener("focus", () => {
+if (!pdfEnChargementDE) {
+resetVisionneurDE();
+}
+pdfEnChargementDE = false;
+});
+}
+
+
+//============================================================================ Fonctions communes =========================================================
+// -----------------------
+// Affichage Externe
+// -----------------------
+function ouvrirPDFExternePT() {
+const pdfSrc = document.getElementById('pdfViewerPT').src;
+if (pdfSrc && pdfSrc !== 'about:blank') {
+window.open(pdfSrc, '_blank');
+} else {
+alert("Aucun document n'est actuellement affiché.");
+}}
+
+function ouvrirPDFExterneMR() {
+const pdfSrc = document.getElementById('pdfViewerMR').src;
+if (pdfSrc && pdfSrc !== 'about:blank') {
+window.open(pdfSrc, '_blank');
+} else {
+alert("Aucun document n'est actuellement affiché.");
+}}
+
+function ouvrirPDFExterneMO() {
+const pdfSrc = document.getElementById('pdfViewerMO').src;
+if (pdfSrc && pdfSrc !== 'about:blank') {
+window.open(pdfSrc, '_blank');
+} else {
+alert("Aucun document n'est actuellement affiché.");
+}}
+function ouvrirPDFExterneDE() {
+const pdfSrc = document.getElementById('pdfViewerDE').src;
+if (pdfSrc && pdfSrc !== 'about:blank') {
+window.open(pdfSrc, '_blank');
+} else {
+alert("Aucun document n'est actuellement affiché.");
+}}
+// -----------------------
+// Réinitialise visionneur
+// -----------------------
+function resetVisionneurPT() {
+const pdf = document.getElementById("pdfViewerPT");
+if (pdf) pdf.src = "about:blank";
+}
+
+function resetVisionneurMR() {
+const iframe = document.getElementById("pdfViewerMR");
+if (iframe) iframe.src = "about:blank";
+}
+
+function resetVisionneurMO() {
+const iframeMO = document.getElementById("pdfViewerMO");
+if (iframeMO) iframeMO.src = "about:blank";
+}
+
+function resetVisionneurDE() {
+const iframe = document.getElementById("pdfViewerDE");
+if (iframe) iframe.src = "about:blank";
+}
+
+// -----------------------
+// Réinitialise les champs individuels
+// -----------------------
+function reinitialiserChampPT(inputId, suggestionsId) {
+document.getElementById(inputId).value = "";
+document.getElementById(suggestionsId).innerHTML = "";
+}
+
+function reinitialiserChampMR(inputId, suggestionsId) {
+document.getElementById(inputId).value = "";
+document.getElementById(suggestionsId).innerHTML = "";
+}
+
+function reinitialiserChampMO(inputId, suggestionsId) {
+document.getElementById(inputId).value = "";
+document.getElementById(suggestionsId).innerHTML = "";
+}
+
+function reinitialiserChampDE(inputId, suggestionsId) {
+document.getElementById(inputId).value = "";
+document.getElementById(suggestionsId).innerHTML = "";
+}
+
+// -----------------------
+// Réinitialise Recherche complète
+// -----------------------
+function reinitialiserRecherchePT() {
+reinitialiserChampPT("recherchePT", "suggestionsPT");
+resetVisionneurPT();
+}
+
+function reinitialiserRechercheMR() {
+const inputEve = document.getElementById("rechercheEvenement");
+const suggestions = document.getElementById("suggestionsEvenement");
+const toggle = document.getElementById("togglerechercheEvenement");
+const label = document.getElementById("labelrechercheEvenement");
+
+// Réinitialiser champ + suggestions
+inputEve.value = "";
+suggestions.innerHTML = "";
+
+// Remettre le mode sur "évènement"
+moderechercheEvenement = "evenement";
+if (toggle) toggle.checked = false; // décoche le switch
+if (label) label.textContent = "⚠️ Évènement";
+inputEve.placeholder = "Tapez le n° de l'évènement ....";
+
+// Réinitialiser visionneur
+resetVisionneurMR();
+}
+
+
+function reinitialiserRechercheMO() {
+reinitialiserChampMO("rechercheSysteme", "suggestionsSysteme");
+reinitialiserChampMO("rechercheSignalisation", "suggestionsSignalisation");
+reinitialiserChampMO("rechercheEnergie", "suggestionsEnergie");
+reinitialiserChampMO("rechercheRegulation", "suggestionsRegulation");
+resetVisionneurMO();
+}
+
+function reinitialiserRechercheDE() {
+const inputFiche = document.getElementById("rechercheFicheDE");
+const suggestionsFiche = document.getElementById("suggestionsFicheDE");
+const toggle = document.getElementById("togglerechercheFicheDE");
+const label = document.getElementById("labelrechercheFicheDE");
+
+// Réinitialiser champ + suggestions
+if (inputFiche) inputFiche.value = "";
+if (suggestionsFiche) suggestionsFiche.innerHTML = "";
+
+// ✅ Revenir toujours au mode par défaut : Fiche
+modeRechercheFicheDE = "fiche";
+if (toggle) toggle.checked = false; // décoche le switch
+if (label) label.textContent = "📃 Fiche";
+if (inputFiche) inputFiche.placeholder = "Tapez le n° de la fiche ....";
+
+// ✅ Réinitialiser la barre PK aussi
+const inputPK = document.getElementById("recherchePK");
+const suggestionsPK = document.getElementById("suggestionsPK");
+if (inputPK) inputPK.value = "";
+if (suggestionsPK) suggestionsPK.innerHTML = "";
+
+// ✅ Reset du visionneur PDF
+resetVisionneurDE();
+}
+
+// -----------------------
+// Réinitialise autres champs (quand un champ prend le focus)
+// -----------------------
+function resetAutresChampsPT(champActif) {
+// Petit délai pour laisser le clic être traité en premier
+setTimeout(() => {
+champs.forEach(({ input, suggestions }) => {
+if (input !== champActif) {
+document.getElementById(input).value = "";
+document.getElementById(suggestions).innerHTML = "";
+indexMapPT.set(input, -1);
+champValide.set(input, false);
+}});
+},
+0);
+}
+
+function resetAutresChampsMR(champActif) {
+setTimeout(() => {
+champsMR.forEach(({ input, suggestions }) => {
+if (input !== champActif) {
+document.getElementById(input).value = "";
+document.getElementById(suggestions).innerHTML = "";
+indexMapMR.set(input, -1);
+}});
+}, 0);
+}
+
+function resetAutresChampsMO(champActif) {
+setTimeout(() => {
+champsMO.forEach(({ input, suggestions }) => {
+if (input !== champActif) {
+document.getElementById(input).value = "";
+document.getElementById(suggestions).innerHTML = "";
+indexMapMO.set(input, -1);
+}});
+}, 0);
+}
+
+function resetAutresChampsDE(champActifId) {
+setTimeout(() => {
+if (typeof champsDE !== 'undefined') {
+champsDE.forEach(({ input, suggestions }) => {
+if (input !== champActifId) {
+document.getElementById(input).value = "";
+document.getElementById(suggestions).innerHTML = "";
+indexMapDE.set(input, -1);
+}});
+}},
+10);
+}
+// -----------------------
+// Choisir suggestions
+// -----------------------
+
+function choisirSuggestionMO(idChamp, idSuggestions, texte, cheminPDF) {
+try {
+pdfEnChargementMO = true;
+const cheminNormalise = encodeURI(cheminPDF.replace(/\\/g, "/"));
+afficherPDFMO(cheminNormalise);
+
+const inputEl = document.getElementById(idChamp);
+inputEl.value = texte;
+document.getElementById(idSuggestions).innerHTML = "";
+inputEl.focus();
+
+setTimeout(() => {
+if (inputEl.scrollWidth > inputEl.clientWidth) {
+let pos = 0;
+let pause = false;
+
+function loopScrollInputMO() {
+if (!pause) {
+pos += 1;
+inputEl.scrollLeft = pos;
+if (pos >= inputEl.scrollWidth - inputEl.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+inputEl.scrollLeft = 0;
+setTimeout(() => {
+pause = false;
+}, 2000);
+}, 2000);
+}}}
+setTimeout(() => {
+pause = false;
+}, 2000);
+setInterval(loopScrollInputMO, 50);
+}}, 
+200);
+} catch (err) {
+console.error("Erreur d'ouverture du PDF:", err);
+alert("Impossible d'ouvrir le fichier PDF.");
+}}
+
+function choisirSuggestionDE(idChamp, idSuggestions, texte, cheminPDF) {
+try {
+pdfEnChargementDE = true;
+const cheminNormalise = encodeURI(cheminPDF.replace(/\\/g, "/"));
+afficherPDFDE(cheminNormalise);
+
+const inputEl = document.getElementById(idChamp);
+inputEl.value = texte;
+inputEl.classList.add("scrollable");
+
+// 🔹 Scroll horizontal auto en boucle si ça dépasse
+setTimeout(() => {
+if (inputEl.scrollWidth > inputEl.clientWidth) {
+let pos = 0;
+let pause = false;
+
+function loopScroll() {
+if (!pause) {
+pos += 1;
+inputEl.scrollLeft = pos;
+if (pos >= inputEl.scrollWidth - inputEl.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+inputEl.scrollLeft = 0;
+setTimeout(() => {
+pause = false;
+}, 2000); //pause après retour au début
+}, 2000); //pause en fin de scroll
+}}}
+
+//pause initiale avant démarrage
+setTimeout(() => {
+pause = false;
+}, 2000);
+
+
+setInterval(loopScroll, 50);
+}},
+200);
+
+document.getElementById(idSuggestions).innerHTML = "";
+inputEl.focus();
+} catch (err) {
+console.error("Erreur d'ouverture du PDF:", err);
+alert("Impossible d'ouvrir le fichier PDF.");
+}}
+
+// -----------------------
+// Surbrillance visible
+// -----------------------
+function mettreEnSurbrillancePT(elements, index) {
+elements.forEach((el, i) => {
+el.classList.toggle("highlighted", i === index);
+if (i === index) el.scrollIntoView({ block: "nearest" });
+});
+}
+
+function mettreEnSurbrillanceMO(elements, index) {
+elements.forEach((el, i) => {
+el.classList.toggle("highlighted", i === index);
+if (i === index) el.scrollIntoView({ block: "nearest" });
+});
+}
+function mettreEnSurbrillanceDE(elements, index) {
+elements.forEach((el, i) => {
+el.classList.toggle("highlighted", i === index);
+if (i === index) el.scrollIntoView({ block: "nearest" });
+});
+}
+
+// -----------------------
+// Gérer touche Enter/Echap
+// -----------------------
+function gererTouchePT(e) {
+const inputActif = document.activeElement;
+if (!inputActif) return;
+
+// Vérifier si l'élément actif est un de nos champs de recherche
+const champConfig = champs.find(c => c.input === inputActif.id);
+if (!champConfig) return;
+
+const { input, suggestions: suggestionsId } = champConfig;
+const suggestionsEl = document.getElementById(suggestionsId);
+
+// --- Touche Entrée ---
+function gererTouchePT(e) {
+const inputActif = document.activeElement;
+if (!inputActif) return;
+
+// Vérifier si l'élément actif est un de nos champs de recherche
+const estChampRecherche = champs.some(c => c.input === inputActif.id);
+if (!estChampRecherche) return;
+
+if (e.key === "Enter") {
+const champConfig = champs.find(c => c.input === inputActif.id);
+if (!champConfig) return;
+
+const { input, suggestions: suggestionsId } = champConfig;
+const suggestionsEl = document.getElementById(suggestionsId);
+
+// Cas 1: Suggestions visibles - sélectionner le PREMIER élément
+const suggestions = suggestionsEl.querySelectorAll("div");
+if (suggestions.length > 0) {
+e.preventDefault();
+suggestions[0].click(); // ← Toujours cliquer sur le premier élément
+return;
+}
+
+// Cas 2: Aucune suggestion visible - chercher dans les données
+const val = inputActif.value.trim();
+if (!val) return;
+
+// Filtrer les résultats
+const resultats = pdfEnChargementPT.filter(f => 
+f.name.toLowerCase().includes(val.toLowerCase())
+);
+
+// Si un seul résultat, le sélectionner automatiquement
+if (resultats.length === 1) {
+e.preventDefault();
+try {
+// Recréer le File object depuis IndexedDB
+const url = URL.createObjectURL(
+new Blob([resultats[0].data], { type: 'application/pdf' })
+);
+validerSuggestionPT(input, suggestionsId, resultats[0].name, url);
+} catch (err) {
+console.error("Erreur d'ouverture du PDF:", err);
+alert("Impossible d'ouvrir le fichier PDF. Il peut avoir été corrompu ou supprimé.");
+}}}
+
+if (e.key === "Escape") {
+e.preventDefault();
+
+champs.forEach(({ input, suggestions }) => {
+const champ = document.getElementById(input);
+if (champ) champ.value = "";
+
+const suggestionContainer = document.getElementById(suggestions);
+if (suggestionContainer) suggestionContainer.innerHTML = "";
+});
+resetVisionneurPT(); 
+
+// Replacer le focus sur le premier champ
+const premierChamp = document.getElementById(champs[0]?.input);
+if (premierChamp) premierChamp.focus();
+}}
+
+// --- Touche Échap ---
+if (e.key === "Escape") {
+e.preventDefault();
+
+champs.forEach(({ input, suggestions }) => {
+const champ = document.getElementById(input);
+if (champ) champ.value = "";
+
+const suggestionContainer = document.getElementById(suggestions);
+if (suggestionContainer) suggestionContainer.innerHTML = "";
+});
+
+resetVisionneurPT();
+
+// Replacer le focus sur le premier champ si présent
+const premierChamp = document.getElementById(champs[0]?.input);
+if (premierChamp) premierChamp.focus();
+}
+}
+
+// Lier gererTouchePT aux événements clavier globaux
+document.addEventListener("keydown", gererTouchePT);
+
+function gererToucheMR(e) {
+const inputActif = document.activeElement;
+if (!inputActif) return;
+
+// Trouver le champ correspondant
+const champConfig = champsMR.find(c => c.input === inputActif.id);
+if (!champConfig) return;
+
+const { input, suggestions: suggestionsId } = champConfig;
+if (e.key === "Enter") {
+e.preventDefault();
+
+// Vérifier d'abord s'il y a des suggestions visibles
+const suggestions = document.querySelectorAll(`#${suggestionsId} div`);
+if (suggestions.length === 1) {
+// Cas 1: Une seule suggestion visible - la sélectionner
+suggestions[0].click();
+return;
+}
+
+// Cas 2: Aucune suggestion visible - chercher dans les données
+const valeur = inputActif.value.trim().toLowerCase();
+if (!valeur) return;
+
+// Déterminer quel ensemble de données utiliser
+let data;
+if (input === "rechercheEvenementnement") {
+data = evenements;
+} else if (input === "rechercheFiche") {
+data = fiches;
+} else {
+return; // Champ non reconnu
+}
+
+// Filtrer les résultats
+const resultats = data.filter(item =>
+item.titre.toLowerCase().includes(valeur) ||
+item.code.toLowerCase().includes(valeur) ||
+(item.motsCles && item.motsCles.some(m => m.includes(valeur)))
+);
+
+// Si un seul résultat, le sélectionner
+if (resultats.length === 1) {
+const cheminNormalise = encodeURI(resultats[0].chemin.replace(/\\/g, "/"));
+afficherPDFMR(cheminNormalise);
+inputActif.value = `${resultats[0].code} — ${resultats[0].titre}`;
+document.getElementById(suggestionsId).innerHTML = "";
+}}
+
+if (e.key === "Escape") {
+e.preventDefault();
+
+champsMR.forEach(({ input, suggestions }) => {
+const champ = document.getElementById(input);
+if (champ) champ.value = "";
+
+const suggestionContainer = document.getElementById(suggestions);
+if (suggestionContainer) suggestionContainer.innerHTML = "";
+});
+
+resetVisionneurMR(); 
+
+// Replacer le focus sur le premier champ
+const premierChamp = document.getElementById(champsMR[0]?.input);
+if (premierChamp) premierChamp.focus();
+}}
+// Lier gererToucheMR aux événements clavier globaux
+document.addEventListener("keydown", gererToucheMR);
+
+function gererToucheMO(e) {
+const inputActif = document.activeElement;
+if (!inputActif) return;
+
+// Trouver le champ correspondant
+const champConfig = champsMO.find(c => c.input === inputActif.id);
+if (!champConfig) return;
+
+const { input, suggestions: suggestionsId } = champConfig;
+
+if (e.key === "Enter") {
+e.preventDefault();
+
+// Vérifier d'abord s'il y a des suggestions visibles
+const suggestions = document.querySelectorAll(`#${suggestionsId} div`);
+if (suggestions.length === 1) {
+// Cas 1: Une seule suggestion visible - la sélectionner
+suggestions[0].click();
+return;
+}
+
+// Cas 2: Aucune suggestion visible - chercher dans les données
+const valeur = inputActif.value.trim().toLowerCase();
+if (!valeur) return;
+
+// Déterminer quel ensemble de données utiliser
+let data;
+if (input === "rechercheEvenementnement") {
+data = evenements;
+} else if (input === "rechercheFiche") {
+data = fiches;
+} else {
+return; // Champ non reconnu
+}
+
+// Filtrer les résultats
+const resultats = data.filter(item =>
+item.titre.toLowerCase().includes(valeur) ||
+item.code.toLowerCase().includes(valeur) ||
+(item.motsCles && item.motsCles.some(m => m.includes(valeur)))
+);
+
+// Si un seul résultat, le sélectionner
+if (resultats.length === 1) {
+const cheminNormalise = encodeURI(resultats[0].chemin.replace(/\\/g, "/"));
+afficherPDFMO(cheminNormalise);
+inputActif.value = `${resultats[0].code} — ${resultats[0].titre}`;
+document.getElementById(suggestionsId).innerHTML = "";
+}}
+
+if (e.key === "Escape") {
+e.preventDefault();
+
+champsMO.forEach(({ input, suggestions }) => {
+const champ = document.getElementById(input);
+if (champ) champ.value = "";
+
+const suggestionContainer = document.getElementById(suggestions);
+if (suggestionContainer) suggestionContainer.innerHTML = "";
+});
+
+resetVisionneurMO(); 
+// Replacer le focus sur le premier champ
+const premierChamp = document.getElementById(champsMO[0]?.input);
+if (premierChamp) premierChamp.focus();
+}}
+// Lier gererToucheMO aux événements clavier globaux
+document.addEventListener("keydown", gererToucheMO);
+
+function gererToucheDE(e) {
+const activeEl = document.activeElement;
+if (!activeEl) return;
+
+// On ne gère que si l'élément actif est un input de champsDE
+const cfg = (typeof champsDE !== "undefined" && Array.isArray(champsDE))
+? champsDE.find(c => c.input === activeEl.id)
+: null;
+if (!cfg) return;
+
+const suggestionsEl = document.getElementById(cfg.suggestions);
+if (!suggestionsEl) return;
+
+if (e.key === "Enter") {
+// Liste des vraies suggestions (pas "suggestion-vide")
+const items = suggestionsEl.querySelectorAll(".suggestion");
+// Si une seule suggestion -> on la sélectionne
+if (items.length === 1) {
+e.preventDefault();
+items[0].click();
+return;
+}
+const idx = (indexMapDE?.get(activeEl.id) ?? -1);
+if (idx >= 0 && idx < items.length) {
+e.preventDefault();
+items[idx].click();
+return;
+}}
+
+if (e.key === "Escape") {
+e.preventDefault();
+// Nettoyage du champ actif + suggestions
+activeEl.value = "";
+suggestionsEl.innerHTML = "";
+if (typeof indexMapDE !== "undefined") indexMapDE.set(activeEl.id, -1);
+
+// Reset viewer
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+
+// Focus sur le premier champ
+const firstId = champsDE && champsDE[0]?.input;
+if (firstId) {
+const firstEl = document.getElementById(firstId);
+if (firstEl) firstEl.focus();
+}}}
+// 👉 Attache en CAPTURE pour que ce handler passe avant les keydown des inputs
+// (sinon, tes handlers par input qui font preventDefault bloqueront Enter ici)
+window.addEventListener("keydown", gererToucheDE, true);
+
+
+// Initialisation
+
+setupRechercheMO("rechercheSysteme", "suggestionsSysteme", systemes);
+setupRechercheMO("rechercheSignalisation", "suggestionsSignalisation", signalisations);
+setupRechercheMO("rechercheEnergie", "suggestionsEnergie", energies);
+setupRechercheMO("rechercheRegulation", "suggestionsRegulation", regulations);
+setupRechercheMixte({ inputId: "recherchePK", suggestionsId: "suggestionsPK", data: PK });
+
+// ----------------------------
+// Ouverture direct du fichier
+// ---------------------------
+function ouvrirFichierDirectMR(chemin) {
+document.getElementById("pdfViewerMR").src = chemin || 'about:blank';
+}
+function ouvrirFichierDirectMO(chemin) {
+document.getElementById("pdfViewerMO").src = chemin || 'about:blank';
+}
+function ouvrirFichierDirect(chemin) {
+document.getElementById("pdfViewerDE").src = chemin || 'about:blank';
+}
+// ------------------------------
+// Ouverture nouvelle recherche
+// -----------------------------
+function ouvrirNouvelleRechercheMR() {
+window.open("autre-interfaceMR.html", "_blank");
+}
+
+function ouvrirNouvelleRechercheMO() {
+window.open("autre-interfaceMO.html", "_blank");
+}
+
+
+// Initialisation
+
+window.addEventListener("DOMContentLoaded", () => {
+const inputPT = document.getElementById("recherchePT");
+if (!inputPT) return;
+
+inputPT.focus();
+inputPT.style.transition = "box-shadow 3s ease";
+inputPT.style.boxShadow = "0 0 10px #00aaff";
+
+// Nettoyage après animation
+setTimeout(() => {
+inputPT.style.boxShadow = "";
+},
+3000);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+const inputMR = document.getElementById("rechercheEvenementnement");
+if (!inputMR) return;
+
+inputMR.focus();
+inputMR.style.transition = "box-shadow 0.5s ease";
+inputMR.style.boxShadow = "0 0 10px #00aaff";
+
+setTimeout(() => {
+inputMR.style.boxShadow = "";
+},
+2000);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+const inputMO = document.getElementById("rechercheSysteme");
+if (!inputMO) return;
+
+inputMO.focus();
+inputMO.style.transition = "box-shadow 0.5s ease";
+inputMO.style.boxShadow = "0 0 10px #00aaff";
+
+setTimeout(() => {
+inputMO.style.boxShadow = "";
+},
+2000);
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+const inputPK = document.getElementById("recherchePK");
+if (!inputPK) return;
+
+inputPK.focus();
+inputPK.style.transition = "box-shadow 0.5s ease";
+inputPK.style.boxShadow = "0 0 10px #00aaff";
+
+setTimeout(() => {
+inputPK.style.boxShadow = "";
+},
+2000);
+});
+
+let modeRechercheFicheDE = "fiche"; // par défaut : Fiche
+
+function changerModeRechercheFicheDE() {
+const toggle = document.getElementById("togglerechercheFicheDE");
+const inputFiche = document.getElementById("rechercheFicheDE");
+const label = document.getElementById("labelrechercheFicheDE");
+
+if (toggle.checked) {
+modeRechercheFicheDE = "scenario";
+label.textContent = "🎥 Scénario";
+inputFiche.placeholder = "Tapez le n° du scénario ....";
+} else {
+modeRechercheFicheDE = "fiche";
+label.textContent = "📃 Fiche";
+inputFiche.placeholder = "Tapez le n° de la fiche ....";
+}
+
+// ✅ Reset barre Fiche/Scénario
+inputFiche.value = "";
+document.getElementById("suggestionsFicheDE").innerHTML = "";
+
+// ✅ Reset barre PK aussi
+const inputPK = document.getElementById("recherchePK");
+if (inputPK) inputPK.value = "";
+const suggestionsPK = document.getElementById("suggestionsPK");
+if (suggestionsPK) suggestionsPK.innerHTML = "";
+
+// ✅ Reset du visionneur PDF
+resetVisionneurDE();
+}
+
+function gererTouchesRechercheDE(e) {
+const inputFiche = document.getElementById("rechercheFicheDE");
+const toggle = document.getElementById("togglerechercheFicheDE");
+
+// Vérifier si le focus est UNIQUEMENT sur la barre rechercheFicheDE
+if (document.activeElement === inputFiche) {
+// Flèche droite : passer en mode scénario
+if (e.key === "ArrowRight") {
+e.preventDefault(); // Empêcher le comportement par défaut
+if (modeRechercheFicheDE !== "scenario") {
+toggle.checked = true;
+changerModeRechercheFicheDE();
+}}
+// Flèche gauche : passer en mode fiche
+else if (e.key === "ArrowLeft") {
+e.preventDefault(); // Empêcher le comportement par défaut
+if (modeRechercheFicheDE !== "fiche") {
+toggle.checked = false;
+changerModeRechercheFicheDE();
+}}}}
+
+// Fonction pour afficher une notification visuelle temporaire pour Désenfumage
+
+// Ajouter l'écouteur d'événements pour les touches (si pas déjà ajouté)
+// Cette ligne doit être exécutée une seule fois, donc vérifier si déjà ajouté
+if (!window._listenersAddedDE) {
+document.addEventListener("keydown", gererTouchesRechercheDE);
+window._listenersAddedDE = true;
+}
+// ==================== Recherche Désenfumage ====================
+document.getElementById("rechercheFicheDE").addEventListener("input", function() {
+lancerRechercheFicheDE(this.value);
+});
+
+function lancerRechercheFicheDE(valeur) {
+const val = valeur.trim().toLowerCase();
+const suggestions = document.getElementById("suggestionsFicheDE"); // "suggestionsFicheDE" pas "suggestionsFicheDe"
+
+// Si le champ est vide, ne pas afficher de suggestions
+if (!val) {
+suggestions.innerHTML = "";
+return;
+}
+
+let resultats = [];
+
+if (modeRechercheFicheDE === "fiche") {
+resultats = fichesDE.filter(f =>// "fichesDE" pas "fichesDES"
+f.code.toLowerCase().includes(val) || 
+f.titre.toLowerCase().includes(val) ||
+(f.motsCles && f.motsCles.some(m => m.includes(val)))
+);
+} else {
+resultats = scenariosDE.filter(s =>// "scenariosDE" pas "fichesDES"
+s.code.toLowerCase().includes(val) || 
+s.titre.toLowerCase().includes(val) ||
+(s.motsCles && s.motsCles.some(m => m.includes(val)))
+);
+}
+
+affichersuggestionsFicheDE(resultats); // "affichersuggestionsFicheDE" pas "afficherSuggestionsFicheDE"
+}
+function affichersuggestionsFicheDE(resultats) {
+const container = document.getElementById("suggestionsFicheDE");
+container.innerHTML = "";
+
+if (resultats.length === 0) return;
+
+resultats.forEach(item => {
+// 🔹 On affiche Code + Titre dans la suggestion
+const texte = `${item.titre}`;
+
+const div = document.createElement("div");
+div.textContent = texte;
+div.title = texte; // tooltip complet au survol
+
+div.onclick = () => {
+afficherPDFDE(item.chemin);
+
+const input = document.getElementById("rechercheFicheDE");
+input.value = texte;
+
+// ✅ Nettoyer ancien scroll si existant
+if (input._autoScroll) clearInterval(input._autoScroll);
+
+// ✅ Vérifier si le texte dépasse
+if (input.scrollWidth > input.clientWidth) {
+let pos = 0;
+let pause = false;
+
+input.scrollLeft = 0;
+
+function loopScroll() {
+if (!pause) {
+pos += 1;
+input.scrollLeft = pos;
+
+if (pos >= input.scrollWidth - input.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+input.scrollLeft = 0;
+pause = false;
+}, 2000); //pause en fin de scroll
+}}}
+
+setTimeout(() => {
+input._autoScroll = setInterval(loopScroll, 50);
+}, 2000); //Attente initiale de 2 secondes
+}
+
+container.innerHTML = "";
+};
+
+container.appendChild(div);
+});
+}
+
+// ================= Navigation clavier dans les suggestions DE =================
+let indexSelectionFicheDE = -1;
+
+document.addEventListener("DOMContentLoaded", () => {
+const inputId = "rechercheFicheDE";
+const suggestionsId = "suggestionsFicheDE";
+const inputEl = document.getElementById(inputId);
+const suggestionsEl = document.getElementById(suggestionsId);
+
+if (!inputEl || !suggestionsEl) return; // sécurité
+
+inputEl.addEventListener("keydown", (e) => {
+// 1️⃣ Récupérer toutes les suggestions visibles
+const sugEls = suggestionsEl.querySelectorAll("div");
+let indexSelection = indexSelectionFicheDE; 
+
+// 2️⃣ Navigation dans la liste de suggestions
+if (sugEls.length > 0) {
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+}}
+
+// Sauvegarder la position et surligner
+indexSelectionFicheDE = indexSelection;
+mettreEnSurbrillanceFicheDE(sugEls, indexSelection);
+} 
+// 3️⃣ Si aucune suggestion → navigation entre champs (si tu veux plusieurs champs)
+else {
+const inputsDE = champsDE.map(c => document.getElementById(c.input));
+const currentIndex = inputsDE.indexOf(inputEl);
+
+if (e.key === "ArrowDown") {
+resetVisionneurDE();
+reinitialiserChampDE(inputId, suggestionsId);
+e.preventDefault();
+inputsDE[(currentIndex + 1) % inputsDE.length].focus();
+} else if (e.key === "ArrowUp") {
+resetVisionneurDE();
+reinitialiserChampDE(inputId, suggestionsId);
+e.preventDefault();
+inputsDE[(currentIndex - 1 + inputsDE.length) % inputsDE.length].focus();
+}}});
+
+// 4️⃣ Réinitialisation quand on clique dans le champ
+inputEl.addEventListener("pointerdown", () => {
+if (document.activeElement !== inputEl) {
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexSelectionFicheDE = -1;
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+}});
+});
+
+// 5️⃣ Mise en surbrillance
+function mettreEnSurbrillanceFicheDE(suggestions, index) {
+suggestions.forEach((el, i) => {
+el.style.background = (i === index) ? "#3498db" : "white";
+el.style.color = (i === index) ? "white" : "black";
+
+// 🔽 Si l'élément est sélectionné, on s'assure qu'il est visible
+if (i === index) {
+el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}});
+}
+// ==================== Recherche Guide MR ====================
+
+let moderechercheEvenement = "evenement"; // Variable globale pour le mode
+
+
+// Nouvelle fonction pour gérer les touches du clavier
+function gererTouchesRecherche(e) {
+const inputEve = document.getElementById("rechercheEvenement");
+const toggle = document.getElementById("togglerechercheEvenement");
+
+// Vérifier si le focus est sur la barre de recherche
+if (document.activeElement === inputEve) {
+// Flèche droite : passer en mode fiche
+if (e.key === "ArrowRight") {
+e.preventDefault(); // Empêcher le comportement par défaut
+if (moderechercheEvenement !== "fiche") {
+toggle.checked = true;
+changerModerechercheEvenement();
+}}
+// Flèche gauche : passer en mode événement
+else if (e.key === "ArrowLeft") {
+e.preventDefault(); // Empêcher le comportement par défaut
+if (moderechercheEvenement !== "evenement") {
+toggle.checked = false;
+changerModerechercheEvenement();
+}}}}
+
+// Ajouter l'écouteur d'événements pour les touches
+document.addEventListener("keydown", gererTouchesRecherche);
+
+// Écouteur pour l'input de recherche (existant)
+document.getElementById("rechercheEvenement").addEventListener("input", function() {
+lancerrechercheEvenement(this.value);
+});
+
+// Modifier la fonction changerModerechercheEvenement pour inclure la notification
+function changerModerechercheEvenement() {
+const toggle = document.getElementById("togglerechercheEvenement");
+const inputEve = document.getElementById("rechercheEvenement");
+const label = document.getElementById("labelrechercheEvenement");
+
+if (toggle.checked) {
+moderechercheEvenement = "fiche";
+label.textContent = "📃 Sous-fiche";
+inputEve.placeholder = "Tapez le n° de la Sous-fiche ....";
+inputEve.value = "";
+document.getElementById("suggestionsEvenement").innerHTML = "";
+resetVisionneurMR();
+
+} else {
+moderechercheEvenement = "evenement";
+label.textContent = "⚠️ Évènement";
+inputEve.placeholder = "Tapez le n° de l'évènement ....";
+inputEve.value = "";
+document.getElementById("suggestionsEvenement").innerHTML = "";
+resetVisionneurMR();
+}}
+
+// Pour la section Guide MR
+function lancerrechercheEvenement(valeur) {
+const val = valeur.trim().toLowerCase();
+const suggestions = document.getElementById("suggestionsEvenement");
+
+// Si le champ est vide, ne pas afficher de suggestions
+if (!val) {
+suggestions.innerHTML = "";
+return;
+}
+
+// Logique de recherche existante...
+let resultats = [];
+
+if (moderechercheEvenement === "evenement") {
+resultats = evenements.filter(e => 
+e.code.toLowerCase().includes(val) || 
+e.titre.toLowerCase().includes(val) ||
+e.motsCles.some(m => m.includes(val))
+);
+} else {
+resultats = fiches.filter(f => 
+f.code.toLowerCase().includes(val) || 
+f.titre.toLowerCase().includes(val) ||
+f.motsCles.some(m => m.includes(val))
+);
+}
+
+affichersuggestionsEvenement(resultats);
+}
+
+
+function affichersuggestionsEvenement(resultats) {
+const container = document.getElementById("suggestionsEvenement");
+container.innerHTML = "";
+
+if (resultats.length === 0) return;
+
+resultats.forEach(item => {
+// 🔹 On affiche Code + Titre dans la suggestion
+const texte = `${item.code} — ${item.titre}`;
+
+const div = document.createElement("div");
+div.textContent = texte;
+div.title = texte; // tooltip complet au survol
+
+div.onclick = () => {
+afficherPDFMR(item.chemin);
+
+const input = document.getElementById("rechercheEvenement");
+input.value = texte;
+
+// ✅ Nettoyer ancien scroll si existant
+if (input._autoScroll) clearInterval(input._autoScroll);
+
+// ✅ Vérifier si le texte dépasse
+if (input.scrollWidth > input.clientWidth) {
+let pos = 0;
+let pause = false;
+
+input.scrollLeft = 0;
+
+function loopScroll() {
+if (!pause) {
+pos += 1;
+input.scrollLeft = pos;
+
+if (pos >= input.scrollWidth - input.clientWidth) {
+pause = true;
+setTimeout(() => {
+pos = 0;
+input.scrollLeft = 0;
+pause = false;
+}, 2000); //pause en fin de scroll
+}}}
+
+setTimeout(() => {
+input._autoScroll = setInterval(loopScroll, 50);
+}, 2000); //Attente initiale de 2 secondes
+}
+
+container.innerHTML = "";
+};
+
+container.appendChild(div);
+});
+}
+
+// ================= Navigation clavier dans les suggestions DE =================
+let indexSelectionEve = -1;
+
+document.addEventListener("DOMContentLoaded", () => {
+const inputId = "rechercheEvenement";
+const suggestionsId = "suggestionsEvenement";
+const inputEl = document.getElementById(inputId);
+const suggestionsEl = document.getElementById(suggestionsId);
+
+if (!inputEl || !suggestionsEl) return; // sécurité
+
+inputEl.addEventListener("keydown", (e) => {
+// 1️⃣ Récupérer toutes les suggestions visibles
+const sugEls = suggestionsEl.querySelectorAll("div");
+let indexSelection = indexSelectionEve; 
+// 2️⃣ Navigation dans la liste de suggestions
+if (sugEls.length > 0) {
+if (e.key === "ArrowDown") {
+e.preventDefault();
+indexSelection = (indexSelection + 1) % sugEls.length;
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+indexSelection = (indexSelection - 1 + sugEls.length) % sugEls.length;
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (indexSelection >= 0) {
+sugEls[indexSelection].click();
+}}
+
+// Sauvegarder la position et surligner
+indexSelectionEve = indexSelection;
+mettreEnSurbrillanceEve(sugEls, indexSelection);
+} 
+// 3️⃣ Si aucune suggestion → navigation entre champs (si tu veux plusieurs champs)
+else {
+const inputsEve = champs.map(c => document.getElementById(c.input));
+const currentIndex = inputsEve.indexOf(inputEl);
+
+if (e.key === "ArrowDown") {
+resetVisionneurMR();
+reinitialiserChampMR(inputId, suggestionsId);
+e.preventDefault();
+inputsDE[(currentIndex + 1) % inputsDE.length].focus();
+} else if (e.key === "ArrowUp") {
+resetVisionneurMR();
+reinitialiserChampMR(inputId, suggestionsId);
+e.preventDefault();
+inputsDE[(currentIndex - 1 + inputsDE.length) % inputsDE.length].focus();
+}}});
+
+// 4️⃣ Réinitialisation quand on clique dans le champ
+inputEl.addEventListener("pointerdown", () => {
+if (document.activeElement !== inputEl) {
+champsDE.forEach(({ input, suggestions }) => {
+const el = document.getElementById(input);
+const sug = document.getElementById(suggestions);
+if (el) el.value = "";
+if (sug) sug.innerHTML = "";
+indexSelectionFicheDE = -1;
+});
+const viewer = document.getElementById("pdfViewerDE");
+if (viewer) viewer.src = "about:blank";
+}});
+});
+
+// 5️⃣ Mise en surbrillance
+function mettreEnSurbrillanceEve(suggestions, index) {
+suggestions.forEach((el, i) => {
+el.style.background = (i === index) ? "#3498db" : "white";
+el.style.color = (i === index) ? "white" : "black";
+
+// 🔽 Si l'élément est sélectionné, on s'assure qu'il est visible
+if (i === index) {
+el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}});
+}
+
+</script>
+</body>
+</html>
